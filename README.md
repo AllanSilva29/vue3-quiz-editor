@@ -86,7 +86,3 @@ Abaixo está um exemplo de como o Assistente de perguntas de IA funciona:
 ## Contribuir
 
 As contribuições são bem-vindas! Por favor, abra uma issue ou submeta um pull request para quaisquer alterações ou melhorias.
-
-## Licença
-
-Este projeto está licenciado sob a Licença MIT. Veja o ficheiro [LICENSE](LICENSE) para mais detalhes.
