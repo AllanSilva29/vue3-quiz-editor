@@ -1,4 +1,3 @@
-Pergunta? | Opção 1 | Opção 2 | Opção 3 | Opção 4 | Explicação
 # Vue 3 Learning Game - Quiz Editor
 
 Este projeto é um editor de quiz simples construído com Vue.js. Permite aos utilizadores criar, editar e gerir perguntas de quiz. Além disso, inclui um gerador de perguntas com assistência de IA que usa a API Groq para gerar perguntas de quiz com base em prompts fornecidos pelo utilizador.
