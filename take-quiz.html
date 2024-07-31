@@ -189,8 +189,8 @@
       <button class="button" @click="restartQuiz">Restart Quiz</button>
     </div>
     <div class="nav-buttons">
-      <a href="/core-concepts/quizz/editor" class="nav-link">Back to Editor</a>
-      <a href="/core-concepts/quizz/created-questions" class="nav-link">View All Questions</a>
+      <a href="/index.html" class="nav-link">Back to Editor</a>
+      <a href="/view-all-questions.html" class="nav-link">View All Questions</a>
     </div>
   </div>
 
@@ -227,10 +227,8 @@
           const savedQuestions = localStorage.getItem('nuxt3Questions');
           if (savedQuestions) {
             questions.value = JSON.parse(savedQuestions);
-            // Ensure we only use one question for this quiz
-            questions.value = [questions.value[0]];
           } else {
-            // Fallback question if none are saved
+            // Pergunta padrão caso nenhuma pergunta esteja salva
             questions.value = [
               {
                 question: "What is the purpose of the 'pages' directory in Nuxt 3?",
