@@ -216,6 +216,9 @@
           if (!answerSubmitted.value) {
             return 'Submit Answer';
           }
+          if (currentQuestionIndex.value < questions.value.length - 1) {
+            return 'Next Question';
+          }
           return 'Finish Quiz';
         });
 
@@ -259,7 +262,11 @@
             if (selectedOption.value === currentQuestion.value.correctAnswer) {
               score.value++;
             }
-          } else {
+          } else if (currentQuestionIndex.value < questions.value.length - 1) {
+            currentQuestionIndex.value++;
+            selectedOption.value = null;
+            answerSubmitted.value = false;
+          }else {
             quizCompleted.value = true;
           }
         }
