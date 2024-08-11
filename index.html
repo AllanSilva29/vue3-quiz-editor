@@ -1,148 +1,169 @@
-<html><head><title>Nuxt 3 Learning Game - Quiz Editor</title>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f5f7;
-    color: #2c3e50;
-    line-height: 1.6;
-    padding: 20px;
-  }
-  #app {
-    max-width: 1000px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  h1, h2 {
-    color: #00dc82;
-    text-align: center;
-  }
-  .form-group {
-    margin-bottom: 20px;
-  }
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  input[type="text"], textarea, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  textarea {
-    height: 100px;
-  }
-  .options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .option {
-    display: flex;
-    align-items: center;
-  }
-  .option input[type="radio"] {
-    margin-right: 10px;
-  }
-  .button {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #00dc82;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  }
-  .button:hover {
-    background-color: #00b86b;
-  }
-  .question-list {
-    margin-top: 30px;
-  }
-  .question-item {
-    background-color: #f0f4f8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  .question-item h3 {
-    margin-top: 0;
-  }
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .edit-btn, .delete-btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  .edit-btn {
-    background-color: #3b82f6;
-    color: white;
-  }
-  .delete-btn {
-    background-color: #ef4444;
-    color: white;
-  }
-  .nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  .nav-link {
-    text-decoration: none;
-    color: #00dc82;
-    font-weight: bold;
-  }
-  .stats {
-    background-color: #e0f2fe;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  .ai-assist {
-    background-color: #fdf2f8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  .ai-assist h2 {
-    color: #db2777;
-  }
-  .ai-assist textarea {
-    height: 100px;
-    margin-bottom: 10px;
-  }
-</style>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nuxt 3 Learning Game - Quiz Editor</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f5f7;
+      color: #2c3e50;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    #app {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      color: #00dc82;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    textarea {
+      height: 100px;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+    }
+    .option input[type="radio"] {
+      margin-right: 10px;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #00dc82;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-danger {
+      background: #ef4444;
+    }
+    .button:hover {
+      background-color: #00b86b;
+    }
+    .btn-danger:hover {
+      background-color: #b32a2a;
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px auto;
+    }
+    .question-list {
+      margin-top: 30px;
+    }
+    .question-item {
+      background-color: #f0f4f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .question-item h3 {
+      margin-top: 0;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .edit-btn, .delete-btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .edit-btn {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #ef4444;
+      color: white;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: #00dc82;
+      font-weight: bold;
+    }
+    .stats {
+      background-color: #e0f2fe;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .ai-assist {
+      background-color: #fdf2f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .ai-assist h2 {
+      color: #db2777;
+    }
+    .ai-assist textarea {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
   <div id="app">
     <h1>Nuxt 3 Learning Game - Quiz Editor</h1>
     
     <div class="stats">
-      <h2>Quiz Statistics</h2>
-      <p>Total Questions: {{ questions.length }}</p>
-      <p>Categories: {{ uniqueCategories.join(', ') }}</p>
-      <p>Average Difficulty: {{ averageDifficulty.toFixed(1) }} / 5</p>
+      <h2>Select Quiz</h2>
+      <select id="quiz-dropdown" @change="selectQuiz">
+        <option v-for="(quiz, index) in quizzes" :key="index" :value="index"> {{ quiz.name }} </option>
+      </select>
+
+      <div class="action-buttons">
+        <button @click="createNewQuiz('')" class="button">Create New Quiz</button>
+        <button @click="deleteQuiz" class="button btn-danger">Delete Quiz</button>
+      </div>
     </div>
 
-    <div class="ai-assist">
-      <h2>AI Question Assistant</h2>
-      <textarea v-model="aiPrompt" placeholder="Enter a topic or concept, and our AI will generate a question for you... (Continue this: Generate a quiz question about...)"></textarea>
-      <button @click="generateQuestion" class="button">Generate Question</button>
+    <div class="stats">
+      <h2>Quiz Statistics</h2>
+      <p>Total Questions: {{ quizzes[currentQuiz].questions.length }}</p>
+      <p>Categories: {{ uniqueCategories.join(', ') }}</p>
+      <p>Average Difficulty: {{ averageDifficulty.toFixed(1) }} / 5</p>
     </div>
 
     <div class="quiz-editor">
@@ -155,9 +176,15 @@
         <div class="form-group">
           <label>Options:</label>
           <div class="options">
-            <div v-for="(option, index) in currentQuestion.options" :key="index" class="option">
-              <input type="radio" :id="'option' + index" :value="index" v-model="currentQuestion.correctAnswer" required>
-              <input type="text" v-model="currentQuestion.options[index]" required>
+            <div v-for="(option, index) in currentQuestion.options" :key="index">
+              <div v-if="index < 2" class="option">
+                <input type="radio" :id="'option' + index" :value="index" v-model="currentQuestion.correctAnswer" required>
+                <input type="text" v-model="currentQuestion.options[index]" required>
+              </div>
+              <div v-else class="option">
+                <input type="radio" :id="'option' + index" :value="index" v-model="currentQuestion.correctAnswer">
+                <input type="text" v-model="currentQuestion.options[index]">
+              </div>
             </div>
           </div>
         </div>
@@ -174,13 +201,13 @@
           <input type="number" id="difficulty" v-model="currentQuestion.difficulty" min="1" max="5" required>
         </div>
         <button type="submit" class="button">{{ isEditing ? 'Update Question' : 'Add Question' }}</button>
-        <button type="button" @click="resetForm" class="button" style="margin-left: 10px;">Reset</button>
+        <button type="button" @click="resetForm" class="button" style="margin-left: 10px;">{{ isEditing ? 'Cancel' : 'Clear' }}</button>
       </form>
     </div>
 
-    <div class="question-list">
+    <div v-if="quizzes[currentQuiz].questions.length > 0" class="question-list">
       <h2>Question List</h2>
-      <div v-for="(question, index) in questions" :key="index" class="question-item">
+      <div v-for="(question, index) in quizzes[currentQuiz].questions" :key="index" class="question-item">
         <h3>Question {{ index + 1 }}</h3>
         <p><strong>Category:</strong> {{ question.category }}</p>
         <p><strong>Difficulty:</strong> {{ question.difficulty }}/5</p>
@@ -203,7 +230,22 @@
 
     createApp({
       setup() {
-        const questions = ref([]);
+        const quizzes = ref([
+          {
+            name: 'Nuxt 3 Basics',
+            questions: [
+              {
+                question: 'What is Nuxt 3?',
+                options: ['A JavaScript framework', 'A CSS framework', 'A PHP framework', 'A Python framework'],
+                correctAnswer: 0,
+                explanation: 'Nuxt 3 is a JavaScript framework for building web applications.',
+                category: 'Introduction',
+                difficulty: 2
+              }
+            ]
+          }
+        ]);
+        const currentQuiz = ref(0);
         const currentQuestion = reactive({
           question: '',
           options: ['', '', '', ''],
@@ -217,30 +259,59 @@
         const aiPrompt = ref('');
 
         const uniqueCategories = computed(() => {
-          return [...new Set(questions.value.map(q => q.category))];
+          return [...new Set(quizzes.value[currentQuiz.value].questions.map(q => q.category))];
         });
 
         const averageDifficulty = computed(() => {
-          if (questions.value.length === 0) return 0;
-          const sum = questions.value.reduce((acc, q) => acc + q.difficulty, 0);
-          return sum / questions.value.length;
+          if (quizzes.value[currentQuiz.value].questions.length === 0) return 0;
+          const sum = quizzes.value[currentQuiz.value].questions.reduce((acc, q) => acc + q.difficulty, 0);
+          return sum / quizzes.value[currentQuiz.value].questions.length;
         });
 
         onMounted(() => {
-          const savedQuestions = localStorage.getItem('nuxt3Questions');
-          if (savedQuestions) {
-            questions.value = JSON.parse(savedQuestions);
+          const savedQuizzes = localStorage.getItem('nuxt3Quizzes');
+          if (savedQuizzes) {
+            quizzes.value = JSON.parse(savedQuizzes);
           }
         });
 
+        function selectQuiz() {
+          currentQuiz.value = document.getElementById('quiz-dropdown').value;
+        }
+
+        function createNewQuiz(textPrompt) {
+          textPrompt = textPrompt || 'Enter the name of the new quiz:';
+          let quizName = prompt(textPrompt);
+          if (quizName) {
+            quizzes.value.push({
+              name: quizName,
+              questions: []
+            });
+            saveToLocalStorage();
+          }
+        }
+
+        function deleteQuiz() {
+          if (confirm('Are you sure you want to delete this quiz (' + quizzes.value[currentQuiz.value].name + ')?')) {
+            quizzes.value.splice(currentQuiz.value, 1);
+            currentQuiz.value = 0;
+            if (quizzes.value.length === 0) {
+              createNewQuiz('You need to have at least one quiz stored, please enter the name of the new quiz:');
+            } else {
+              saveToLocalStorage();
+            }
+          }
+        }
+
         function saveQuestion() {
           const newQuestion = { ...currentQuestion };
+          console.log(quizzes);
           if (isEditing.value) {
-            questions.value[editingIndex] = newQuestion;
+            quizzes.value[currentQuiz.value].questions[editingIndex] = newQuestion;
             isEditing.value = false;
             editingIndex = -1;
           } else {
-            questions.value.push(newQuestion);
+            quizzes.value[currentQuiz.value].questions.push(newQuestion);
           }
           resetForm();
           saveToLocalStorage();
@@ -260,20 +331,20 @@
         }
 
         function editQuestion(index) {
-          Object.assign(currentQuestion, questions.value[index]);
+          Object.assign(currentQuestion, quizzes.value[currentQuiz.value].questions[index]);
           isEditing.value = true;
           editingIndex = index;
         }
 
         function deleteQuestion(index) {
           if (confirm('Are you sure you want to delete this question?')) {
-            questions.value.splice(index, 1);
+            quizzes.value[currentQuiz.value].questions.splice(index, 1);
             saveToLocalStorage();
           }
         }
 
         function saveToLocalStorage() {
-          localStorage.setItem('nuxt3Questions', JSON.stringify(questions.value));
+          localStorage.setItem('nuxt3Quizzes', JSON.stringify(quizzes.value));
         }
 
         function generateQuestion() {
@@ -322,15 +393,17 @@
           aiPrompt.value = '';
         }
 
-
-
         return {
-          questions,
+          quizzes,
+          currentQuiz,
           currentQuestion,
           isEditing,
           uniqueCategories,
           averageDifficulty,
           aiPrompt,
+          selectQuiz,
+          createNewQuiz,
+          deleteQuiz,
           saveQuestion,
           resetForm,
           editQuestion,

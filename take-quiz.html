@@ -1,192 +1,211 @@
-<html><head>
-<title>Nuxt 3 Learning Game - Quiz</title>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f5f7;
-    color: #2c3e50;
-    line-height: 1.6;
-    padding: 20px;
-  }
-  #app {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  h1, h2 {
-    color: #00dc82;
-    text-align: center;
-  }
-  .question {
-    background-color: #f0f4f8;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  .options {
-    display: grid;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .option {
-    background-color: #ffffff;
-    border: 2px solid #d1d5db;
-    border-radius: 8px;
-    padding: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .option:hover {
-    background-color: #e0f2fe;
-    border-color: #00dc82;
-  }
-  .option.selected {
-    background-color: #00dc82;
-    color: #ffffff;
-    border-color: #00dc82;
-  }
-  .option.correct {
-    background-color: #34d399;
-    color: #ffffff;
-    border-color: #34d399;
-  }
-  .option.incorrect {
-    background-color: #f87171;
-    color: #ffffff;
-    border-color: #f87171;
-  }
-  .explanation {
-    background-color: #e0f2fe;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-  }
-  .button {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #00dc82;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-  }
-  .button:hover {
-    background-color: #00b86b;
-  }
-  .button:disabled {
-    background-color: #9ca3af;
-    cursor: not-allowed;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #e5e7eb;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  .progress {
-    height: 100%;
-    background-color: #00dc82;
-    transition: width 0.5s ease;
-  }
-  .score {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  .meta-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 10px;
-  }
-  .nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  .nav-link {
-    text-decoration: none;
-    color: #00dc82;
-    font-weight: bold;
-  }
-  .result-message {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-  }
-  .result-message.success {
-    background-color: #d1fae5;
-    color: #065f46;
-  }
-  .result-message.warning {
-    background-color: #fef3c7;
-    color: #92400e;
-  }
-</style>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nuxt 3 Learning Game - Quiz</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f5f7;
+      color: #2c3e50;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    #app {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      color: #00dc82;
+      text-align: center;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .question {
+      background-color: #f0f4f8;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .option {
+      background-color: #ffffff;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option:hover {
+      background-color: #e0f2fe;
+      border-color: #00dc82;
+    }
+    .option.selected {
+      background-color: #00dc82;
+      color: #ffffff;
+      border-color: #00dc82;
+    }
+    .option.correct {
+      background-color: #34d399;
+      color: #ffffff;
+      border-color: #34d399;
+    }
+    .option.incorrect {
+      background-color: #f87171;
+      color: #ffffff;
+      border-color: #f87171;
+    }
+    .explanation {
+      background-color: #e0f2fe;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #00dc82;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+    .button:hover {
+      background-color: #00b86b;
+    }
+    .button:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: #e5e7eb;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background-color: #00dc82;
+      transition: width 0.5s ease;
+    }
+    .score {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .meta-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: #00dc82;
+      font-weight: bold;
+    }
+    .result-message {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .result-message.success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .result-message.warning {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+  </style>
 </head>
 <body>
   <div id="app">
     <h1>Nuxt 3 Learning Quiz</h1>
-    <div class="progress-bar">
-      <div class="progress" :style="{ width: `${(currentQuestionIndex + 1) / questions.length * 100}%` }"></div>
+    <div v-if="selectedQuiz === null" style="display: grid; margin: auto 50px; grid-template-columns: 1fr; justify-items: center;">
+      <h2>Select a Quiz</h2>
+      <select id="quiz-selector" class="options">
+        <option v-for="(quiz, index) in quizzes" :key="index" :value="index" class="option">{{ quiz.name }}</option>
+      </select>
+      <button class="button" @click="selectQuiz" style="width: fit-content;">Start Quiz</button>
     </div>
-    <div class="score" v-if="quizCompleted">
-      Final Score: {{ score }} / {{ questions.length }}
-    </div>
-    <div v-if="currentQuestion && !quizCompleted">
-      <div class="meta-info">
-        <span>Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</span>
-        <span>Category: {{ currentQuestion.category }}</span>
-        <span>Difficulty: {{ currentQuestion.difficulty }}/5</span>
+    <div v-else>
+      <div class="progress-bar">
+        <div class="progress" :style="{ width: `${(currentQuestionIndex + 1) / quizzes[selectedQuiz].questions.length * 100}%` }"></div>
       </div>
-      <div class="question">
-        <h2>{{ currentQuestion.question }}</h2>
-        <div class="options">
-          <div v-for="(option, index) in currentQuestion.options" :key="index"
-               :class="['option', {
-                 'selected': selectedOption === index,
-                 'correct': answerSubmitted && index === currentQuestion.correctAnswer,
-                 'incorrect': answerSubmitted && selectedOption === index && index !== currentQuestion.correctAnswer
-               }]"
-               @click="selectOption(index)">
-            {{ option }}
+      <div class="score" v-if="quizCompleted">
+        Final Score: {{ score }} / {{ quizzes[selectedQuiz].questions.length }}
+      </div>
+      <div v-if="!quizCompleted">
+        <div class="meta-info">
+          <span>Question {{ currentQuestionIndex + 1 }} of {{ quizzes[selectedQuiz].questions.length }}</span>
+          <span>Category: {{ currentQuestion.category }}</span>
+          <span>Difficulty: {{ currentQuestion.difficulty }}/5</span>
+        </div>
+        <div class="question">
+          <h2>{{ currentQuestion.question }}</h2>
+          <div class="options">
+            <div v-for="(option, index) in currentQuestion.options" :key="index">
+              <div v-if="option.length > 0" :class="['option', {
+                'selected': selectedOption === index, 
+                'correct': answerSubmitted && index === currentQuestion.correctAnswer,
+                'incorrect': answerSubmitted && selectedOption === index && index !== currentQuestion.correctAnswer
+                }]"
+                @click="selectOption(index)">
+                {{ option }}
+              </div>
+            </div>
           </div>
         </div>
+        <button class="button" @click="submitAnswer" :disabled="!canProceed">
+          {{ buttonText }}
+        </button>
+        <div v-if="answerSubmitted" class="explanation">
+          <h3>Explanation:</h3>
+          <p>{{ currentQuestion.explanation }}</p>
+        </div>
       </div>
-      <button class="button" @click="submitAnswer" :disabled="!canProceed">
-        {{ buttonText }}
-      </button>
-      <div v-if="answerSubmitted" class="explanation">
-        <h3>Explanation:</h3>
-        <p>{{ currentQuestion.explanation }}</p>
+      <div v-if="quizCompleted">
+        <h2>Quiz Completed!</h2>
+        <p>You scored {{ score }} out of {{ quizzes[selectedQuiz].questions.length }}.</p>
+        <div :class="['result-message', score / quizzes[selectedQuiz].questions.length >= 0.7 ? 'success' : 'warning']">
+          <p v-if="score / quizzes[selectedQuiz].questions.length >= 0.7">
+            Congratulations! You've demonstrated a strong understanding of this Nuxt 3 concept. Keep up the great work!
+          </p>
+          <p v-else>
+            You're on the right track, but there's room for improvement. Consider reviewing the Nuxt 3 documentation on this topic and trying the quiz again to reinforce your knowledge.
+          </p>
+        </div>
+        <button class="button" @click="restartQuiz">Restart Quiz</button>
       </div>
-    </div>
-    <div v-if="quizCompleted">
-      <h2>Quiz Completed!</h2>
-      <p>You scored {{ score }} out of {{ questions.length }}.</p>
-      <div :class="['result-message', score / questions.length >= 0.7 ? 'success' : 'warning']">
-        <p v-if="score / questions.length >= 0.7">
-          Congratulations! You've demonstrated a strong understanding of this Nuxt 3 concept. Keep up the great work!
-        </p>
-        <p v-else>
-          You're on the right track, but there's room for improvement. Consider reviewing the Nuxt 3 documentation on this topic and trying the quiz again to reinforce your knowledge.
-        </p>
-      </div>
-      <button class="button" @click="restartQuiz">Restart Quiz</button>
     </div>
     <div class="nav-buttons">
       <a href="/index.html" class="nav-link">Back to Editor</a>
@@ -199,14 +218,19 @@
 
     createApp({
       setup() {
-        const questions = ref([]);
+        const quizzes = ref([]);
+        const selectedQuiz = ref(null);
         const currentQuestionIndex = ref(0);
         const selectedOption = ref(null);
         const answerSubmitted = ref(false);
         const score = ref(0);
         const quizCompleted = ref(false);
 
-        const currentQuestion = computed(() => questions.value[currentQuestionIndex.value]);
+        const currentQuestion = computed(() => {
+          return selectedQuiz.value === null 
+            ? null  
+            : quizzes.value[selectedQuiz.value].questions[currentQuestionIndex.value];
+        });
 
         const canProceed = computed(() => {
           return selectedOption.value !== null || answerSubmitted.value;
@@ -216,7 +240,7 @@
           if (!answerSubmitted.value) {
             return 'Submit Answer';
           }
-          if (currentQuestionIndex.value < questions.value.length - 1) {
+          if (currentQuestionIndex.value < quizzes.value[selectedQuiz.value].questions.length - 1) {
             return 'Next Question';
           }
           return 'Finish Quiz';
@@ -227,13 +251,14 @@
         });
 
         function loadQuestions() {
-          const savedQuestions = localStorage.getItem('nuxt3Questions');
-          if (savedQuestions) {
-            questions.value = JSON.parse(savedQuestions);
+          const savedQuizzes = localStorage.getItem('nuxt3Quizzes');
+          if (savedQuizzes) {
+            quizzes.value = JSON.parse(savedQuizzes);
           } else {
             // Pergunta padrão caso nenhuma pergunta esteja salva
-            questions.value = [
-              {
+            savedQuizzes.value = [{
+              name: "Nuxt 3 Basics",
+              questions: {
                 question: "What is the purpose of the 'pages' directory in Nuxt 3?",
                 options: [
                   "To store static assets",
@@ -246,8 +271,12 @@
                 category: "Routing",
                 difficulty: 2
               }
-            ];
+            }];
           }
+        }
+
+        function selectQuiz() {
+          selectedQuiz.value = document.getElementById("quiz-selector").value;
         }
 
         function selectOption(index) {
@@ -262,7 +291,7 @@
             if (selectedOption.value === currentQuestion.value.correctAnswer) {
               score.value++;
             }
-          } else if (currentQuestionIndex.value < questions.value.length - 1) {
+          } else if (currentQuestionIndex.value < quizzes.value[selectedQuiz.value].questions.length - 1) {
             currentQuestionIndex.value++;
             selectedOption.value = null;
             answerSubmitted.value = false;
@@ -272,6 +301,7 @@
         }
 
         function restartQuiz() {
+          selectedQuiz.value = null;
           currentQuestionIndex.value = 0;
           selectedOption.value = null;
           answerSubmitted.value = false;
@@ -281,15 +311,17 @@
         }
 
         return {
+          quizzes,
+          selectedQuiz,
           currentQuestion,
           currentQuestionIndex,
-          questions,
           selectedOption,
           answerSubmitted,
           score,
           quizCompleted,
           canProceed,
           buttonText,
+          selectQuiz,
           selectOption,
           submitAnswer,
           restartQuiz
