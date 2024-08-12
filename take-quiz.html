@@ -149,13 +149,17 @@
 </head>
 <body>
   <div id="app">
-    <h1>Nuxt 3 Learning Quiz</h1>
-    <div v-if="selectedQuiz === null" style="display: grid; margin: auto 50px; grid-template-columns: 1fr; justify-items: center;">
+    <h1>Take A Quiz</h1>
+    <div v-if="!quizStarted" style="display: grid; margin: auto 50px; grid-template-columns: 1fr; justify-items: center;">
       <h2>Select a Quiz</h2>
-      <select id="quiz-selector" class="options">
+      <select id="quiz-selector" class="options" @change="selectQuiz">
         <option v-for="(quiz, index) in quizzes" :key="index" :value="index" class="option">{{ quiz.name }}</option>
       </select>
-      <button class="button" @click="selectQuiz" style="width: fit-content;">Start Quiz</button>
+      <div style="width: 90%; margin: 30px 0">
+        <h3 style="margin: 0 0 10px 0;">Description</h3>
+        <p v-if="quizzes.length > 0" style="margin: 0">{{ quizzes[selectedQuiz].description }}</p>
+      </div>
+      <button class="button" @click="quizStarted = true;" style="width: fit-content;">Start Quiz</button>
     </div>
     <div v-else>
       <div class="progress-bar">
@@ -198,10 +202,10 @@
         <p>You scored {{ score }} out of {{ quizzes[selectedQuiz].questions.length }}.</p>
         <div :class="['result-message', score / quizzes[selectedQuiz].questions.length >= 0.7 ? 'success' : 'warning']">
           <p v-if="score / quizzes[selectedQuiz].questions.length >= 0.7">
-            Congratulations! You've demonstrated a strong understanding of this Nuxt 3 concept. Keep up the great work!
+            {{ quizzes[selectedQuiz].congratulations }}
           </p>
-          <p v-else>
-            You're on the right track, but there's room for improvement. Consider reviewing the Nuxt 3 documentation on this topic and trying the quiz again to reinforce your knowledge.
+          <p v-else> 
+            {{ quizzes[selectedQuiz].failed }}
           </p>
         </div>
         <button class="button" @click="restartQuiz">Restart Quiz</button>
@@ -219,7 +223,8 @@
     createApp({
       setup() {
         const quizzes = ref([]);
-        const selectedQuiz = ref(null);
+        const quizStarted = ref(false);
+        const selectedQuiz = ref(0);
         const currentQuestionIndex = ref(0);
         const selectedOption = ref(null);
         const answerSubmitted = ref(false);
@@ -227,9 +232,7 @@
         const quizCompleted = ref(false);
 
         const currentQuestion = computed(() => {
-          return selectedQuiz.value === null 
-            ? null  
-            : quizzes.value[selectedQuiz.value].questions[currentQuestionIndex.value];
+          return quizzes.value[selectedQuiz.value].questions[currentQuestionIndex.value];
         });
 
         const canProceed = computed(() => {
@@ -253,24 +256,30 @@
         function loadQuestions() {
           const savedQuizzes = localStorage.getItem('nuxt3Quizzes');
           if (savedQuizzes) {
+            console.log("questoes carregadas");
             quizzes.value = JSON.parse(savedQuizzes);
           } else {
             // Pergunta padrão caso nenhuma pergunta esteja salva
             savedQuizzes.value = [{
               name: "Nuxt 3 Basics",
-              questions: {
-                question: "What is the purpose of the 'pages' directory in Nuxt 3?",
-                options: [
-                  "To store static assets",
-                  "To define API routes",
-                  "To create file-based routing",
-                  "To store global components"
-                ],
-                correctAnswer: 2,
-                explanation: "In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
-                category: "Routing",
-                difficulty: 2
-              }
+              description: "Test your knowledge of the basics of Nuxt 3.",
+              congratulations: "Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
+              failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
+              questions: [
+                {
+                  question: "What is the purpose of the 'pages' directory in Nuxt 3?",
+                  options: [
+                    "To store static assets",
+                    "To define API routes",
+                    "To create file-based routing",
+                    "To store global components"
+                  ],
+                  correctAnswer: 2,
+                  explanation: "In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
+                  category: "Routing",
+                  difficulty: 2
+                }
+              ]
             }];
           }
         }
@@ -301,7 +310,7 @@
         }
 
         function restartQuiz() {
-          selectedQuiz.value = null;
+          quizStarted.value = false;
           currentQuestionIndex.value = 0;
           selectedOption.value = null;
           answerSubmitted.value = false;
@@ -312,6 +321,7 @@
 
         return {
           quizzes,
+          quizStarted,
           selectedQuiz,
           currentQuestion,
           currentQuestionIndex,

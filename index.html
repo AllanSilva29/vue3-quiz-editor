@@ -145,7 +145,7 @@
 </head>
 <body>
   <div id="app">
-    <h1>Nuxt 3 Learning Game - Quiz Editor</h1>
+    <h1>Quiz Editor</h1>
     
     <div class="stats">
       <h2>Select Quiz</h2>
@@ -157,6 +157,28 @@
         <button @click="createNewQuiz('')" class="button">Create New Quiz</button>
         <button @click="deleteQuiz" class="button btn-danger">Delete Quiz</button>
       </div>
+
+      <form @submit.prevent="editQuiz">
+        <div class="form-group">
+          <label for="quiz-name">Edit Quiz Name:</Label>
+          <input type="text" id="quiz-name" v-model="quizzes[currentQuiz].name" required>
+        </div>
+        <div class="form-group">
+          <label for="quiz-description">Edit Quiz Description:</label>
+          <textarea id="quiz-description" v-model="quizzes[currentQuiz].description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="quiz-congratulations">Edit Quiz Congratulation Message:</label>
+          <input type="text" id="quiz-congratulations" v-model="quizzes[currentQuiz].congratulations"></input>
+        </div>
+        <div class="form-group">
+          <label for="quiz-failed">Edit Quiz Failed Message:</label>
+          <input type="text" id="quiz-failed" v-model="quizzes[currentQuiz].failed"></input>
+        </div>
+        <div class="action-buttons">
+          <button type="submit" class="button">Update Quiz</button>
+        </div>
+      </form>
     </div>
 
     <div class="stats">
@@ -232,14 +254,22 @@
       setup() {
         const quizzes = ref([
           {
-            name: 'Nuxt 3 Basics',
+            name: "Nuxt 3 Basics",
+            description: "Test your knowledge of the basics of Nuxt 3.",
+            congratulations: "Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
+            failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
             questions: [
               {
-                question: 'What is Nuxt 3?',
-                options: ['A JavaScript framework', 'A CSS framework', 'A PHP framework', 'A Python framework'],
-                correctAnswer: 0,
-                explanation: 'Nuxt 3 is a JavaScript framework for building web applications.',
-                category: 'Introduction',
+                question: "What is the purpose of the 'pages' directory in Nuxt 3?",
+                options: [
+                  "To store static assets",
+                  "To define API routes",
+                  "To create file-based routing",
+                  "To store global components"
+                ],
+                correctAnswer: 2,
+                explanation: "In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
+                category: "Routing",
                 difficulty: 2
               }
             ]
@@ -289,6 +319,18 @@
             });
             saveToLocalStorage();
           }
+        }
+
+        function editQuiz() {
+          let name = document.getElementById('quiz-name').value;
+          let description = document.getElementById('quiz-description').value;
+          let congratulations = document.getElementById('quiz-congratulations').value;
+          let failed = document.getElementById('quiz-failed').value;
+          quizzes.value[currentQuiz.value].name = name;
+          quizzes.value[currentQuiz.value].description = description;
+          quizzes.value[currentQuiz.value].congratulations = congratulations;
+          quizzes.value[currentQuiz.value].failed = failed;
+          saveToLocalStorage();
         }
 
         function deleteQuiz() {
@@ -403,6 +445,7 @@
           aiPrompt,
           selectQuiz,
           createNewQuiz,
+          editQuiz,
           deleteQuiz,
           saveQuestion,
           resetForm,
