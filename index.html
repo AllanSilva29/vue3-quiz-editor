@@ -242,7 +242,7 @@
     </div>
 
     <div class="nav-buttons">
-      <a href="take-quiz.html" class="nav-link">Take Quiz</a>
+      <a href="take-a-quiz.html" class="nav-link">Take Quiz</a>
       <a href="view-all-quizzes.html" class="nav-link">View All Quizzes</a>
     </div>
   </div>
@@ -316,8 +316,9 @@
             quizzes.value.push({
               name: quizName,
               questions: []
-            });
+            });    
             saveToLocalStorage();
+            alert("Quiz criado com sucesso!");
           }
         }
 
@@ -330,7 +331,7 @@
           quizzes.value[currentQuiz.value].description = description;
           quizzes.value[currentQuiz.value].congratulations = congratulations;
           quizzes.value[currentQuiz.value].failed = failed;
-          alert("Quiz salvo com sucesso!")
+          alert("Quiz salvo com sucesso!");
           saveToLocalStorage();
         }
 
@@ -341,8 +342,8 @@
             if (quizzes.value.length === 0) {
               createNewQuiz('Você precisa ter pelo menos um quiz salvo, por favor digite o nome do novo quiz:');
             } else {
-              alert(`Quiz ${quizzes.value[currentQuiz.value].name} deletado com sucesso.`)
               saveToLocalStorage();
+              alert(`Quiz ${quizzes.value[currentQuiz.value].name} deletado com sucesso.`);
             }
           }
         }
