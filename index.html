@@ -149,7 +149,7 @@
     
     <div class="stats">
       <h2>Select Quiz</h2>
-      <select id="quiz-dropdown" @change="selectQuiz">
+      <select id="quiz-dropdown" @change="selectQuiz" v-model="currentQuiz">
         <option v-for="(quiz, index) in quizzes" :key="index" :value="index"> {{ quiz.name }} </option>
       </select>
 
@@ -317,6 +317,9 @@
               questions: []
             });    
             saveToLocalStorage();
+
+            currentQuiz.value = quizzes.value.length - 1;
+
             alert("Quiz criado com sucesso!");
           }
         }
@@ -349,7 +352,6 @@
 
         function saveQuestion() {
           const newQuestion = { ...currentQuestion };
-          console.log(quizzes);
           if (isEditing.value) {
             quizzes.value[currentQuiz.value].questions[editingIndex] = newQuestion;
             isEditing.value = false;
@@ -398,7 +400,6 @@
           isEditing,
           uniqueCategories,
           averageDifficulty,
-          aiPrompt,
           selectQuiz,
           createNewQuiz,
           editQuiz,
