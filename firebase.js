@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"
 
 const firebaseConfig = {
 	//configurações do firebase
@@ -18,21 +18,22 @@ export async function login(email, password) {
 			window.alert("Erro ao fazer login: " + error.message);
 			return null;
 		});
-
 }
 
-export function logado() {
+export async function logado() {
 	return auth.operations.then(() => {
 		return auth.currentUser;
 	})
 }
 
 export function deslogar() {
-	signOut(auth).then(() => {
+	return signOut(auth).then(() => {
 		//deslogado, remover usuário da dashboard
 		console.log("deslogado");
+		return true;
 	}).catch((error) => {
 		window.alert("Erro ao deslogar: " + error.message);
+		return false;
 	})
 }
 

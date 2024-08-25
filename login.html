@@ -199,11 +199,6 @@
 
 				<button type="submit" class="button">Login</button>
 			</form>
-
-			<div class="nav-buttons">
-				<a href="take-a-quiz.html" class="nav-link">Take a Quiz</a>
-				<a href="index.html" class="nav-link">Quiz Editor</a>
-			</div>
 		</div>
 
 		<script type="module">
@@ -216,9 +211,12 @@
 					const password = ref("");
 
 					onBeforeMount(() => {
-						if (logado() !== null) {
-							window.location.href = "dashboard/quiz-editor.html";
-						}
+						logado().then((user) => {
+							if (user) {
+								window.location.href =
+									"dashboard/quiz-editor.html";
+							}
+						});
 					});
 
 					function sendLogin() {

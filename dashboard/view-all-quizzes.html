@@ -247,12 +247,18 @@
 			</div>
 			<div class="nav-buttons">
 				<a href="../index.html" class="nav-link">Take a Quiz</a>
+				<button @click="sair" class="button">Sair</button>
 				<a href="quiz-editor.html" class="nav-link">Quiz Editor</a>
 			</div>
 		</div>
 
 		<script type="module">
-			import {getQuizzes, insertQuizzes, logado} from "../firebase.js";
+			import {
+				getQuizzes,
+				insertQuizzes,
+				logado,
+				deslogar,
+			} from "../firebase.js";
 			const {
 				createApp,
 				ref,
@@ -291,6 +297,14 @@
 							0
 						);
 						return sum / questions.value.length;
+					});
+
+					onBeforeMount(() => {
+						logado().then((user) => {
+							if (user === null) {
+								window.location.href = "../login.html";
+							}
+						});
 					});
 
 					onMounted(() => {
@@ -352,6 +366,14 @@
 						}
 					}
 
+					function sair() {
+						deslogar().then((retorno) => {
+							if (retorno) {
+								window.location.href = "../login.html";
+							}
+						});
+					}
+
 					return {
 						quizzes,
 						currentQuestion,
@@ -362,6 +384,7 @@
 						resetForm,
 						editQuestion,
 						deleteQuestion,
+						sair,
 					};
 				},
 			}).mount("#app");
