@@ -1,0 +1,242 @@
+<html>
+	<head>
+		<title>Nuxt 3 Learning Game - Quiz Editor</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+		<style>
+			:root {
+				--spacing-size: 60px;
+			}
+			body {
+				font-family: "Inter", sans-serif;
+				background-color: #f4f5f7;
+				color: #2c3e50;
+				line-height: 1.6;
+				padding: 20px;
+			}
+			#app {
+				max-width: 1000px;
+				margin: 0 auto;
+				background-color: #ffffff;
+				padding: 30px;
+				border-radius: 12px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			h1 {
+				color: #00dc82;
+				text-align: center;
+			}
+			h2 {
+				text-align: center;
+			}
+			.form-group {
+				margin-bottom: 20px;
+			}
+			label {
+				display: block;
+				margin-bottom: 5px;
+				font-weight: bold;
+			}
+			input[type="text"],
+			input[type="password"],
+			textarea,
+			select {
+				width: 100%;
+				padding: 10px;
+				border: 1px solid #d1d5db;
+				border-radius: 4px;
+				font-size: 16px;
+			}
+			textarea {
+				height: 100px;
+			}
+			.options {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+			}
+			.option {
+				display: flex;
+				align-items: center;
+			}
+			.option input[type="radio"] {
+				margin-right: 10px;
+			}
+			.button {
+				display: inline-block;
+				padding: 12px 24px;
+				background-color: #00dc82;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+				transition: background-color 0.3s ease;
+			}
+			.button:hover {
+				background-color: #00b86b;
+			}
+			.quiz-list {
+				margin-top: var(--spacing-size);
+			}
+			.quiz-item:not(:last-of-type) {
+				position: relative;
+				margin-bottom: 50px;
+			}
+			.quiz-item:not(:last-of-type)::after {
+				content: "";
+				position: absolute;
+				width: 80%;
+				left: 10%;
+				background: #8d8d8d;
+				height: 2px;
+				bottom: calc(var(--spacing-size) / -2) !important;
+			}
+			.question-item {
+				background-color: #f0f4f8;
+				padding: 15px;
+				border-radius: 8px;
+				margin-bottom: 15px;
+			}
+			.question-item h3 {
+				margin: 0 auto 10px 0;
+			}
+			.question-info {
+				display: flex;
+				width: 100%;
+				justify-content: space-around;
+			}
+			.question-option-wrapper {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 20px;
+				width: 100%;
+				margin: 20px auto;
+			}
+			.question-option-background {
+				border-radius: 10px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				background: #d7ebff;
+			}
+			.question-option-background.correct {
+				background: rgb(127, 255, 127);
+			}
+			.question-explanation {
+				background-color: #e0f2fe;
+				padding: 15px;
+				border-radius: 8px;
+				margin-top: 20px;
+			}
+			.question-explanation h4 {
+				margin: 0;
+			}
+			.question-explanation p {
+				margin-left: 10px;
+			}
+			.no-questions {
+				text-align: center;
+				font-weight: bold;
+				color: #ef4444;
+			}
+			.actions {
+				display: flex;
+				justify-content: flex-end;
+				gap: 10px;
+				margin-top: 10px;
+			}
+			.edit-btn,
+			.delete-btn {
+				padding: 5px 10px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 14px;
+			}
+			.edit-btn {
+				background-color: #3b82f6;
+				color: white;
+			}
+			.delete-btn {
+				background-color: #ef4444;
+				color: white;
+			}
+			.nav-buttons {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 20px;
+			}
+			.nav-link {
+				text-decoration: none;
+				color: #00dc82;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<h1>Login</h1>
+
+			<form @submit.prevent="sendLogin">
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input
+						type="text"
+						id="email"
+						name="email"
+						v-model="email" />
+				</div>
+
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						v-model="password" />
+				</div>
+
+				<button type="submit" class="button">Login</button>
+			</form>
+
+			<div class="nav-buttons">
+				<a href="take-a-quiz.html" class="nav-link">Take a Quiz</a>
+				<a href="index.html" class="nav-link">Quiz Editor</a>
+			</div>
+		</div>
+
+		<script type="module">
+			import {login, logado} from "./firebase.js";
+			const {createApp, ref, reactive, computed, onBeforeMount} = Vue;
+
+			createApp({
+				setup() {
+					const email = ref("");
+					const password = ref("");
+
+					onBeforeMount(() => {
+						if (logado() !== null) {
+							window.location.href = "dashboard/quiz-editor.html";
+						}
+					});
+
+					function sendLogin() {
+						login(email.value, password.value).then((user) => {
+							if (user) {
+								window.location.href =
+									"dashboard/quiz-editor.html";
+							}
+						});
+					}
+
+					return {
+						email,
+						password,
+						sendLogin,
+					};
+				},
+			}).mount("#app");
+		</script>
+	</body>
+</html>
