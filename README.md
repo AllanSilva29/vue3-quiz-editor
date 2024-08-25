@@ -76,9 +76,7 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
     gsutil cors set yourFile.json gs://yourProject
     ```
 
-#### Regras do storage
-
-> A regra para escrever no storage é 'temporária', espero conseguir alterá-la no futuro inserindo autênticação, provavelmente algo assim funcionaria: "allow write: if request.auth != null;"
+#### Configurando o storage e autenticação
 
 1. Para permitir escritas e leituras no storage, também é necessário alterar as regras. Com o seguinte código, ele irá aceitar leituras e escritas provenientes de qualquer pessoa.
 
@@ -89,11 +87,13 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
     	match /b/{bucket}/o {
     		match /{allPaths=**} {
     			allow read: if true;
-    			allow write: if true;
+    			allow write: if request.auth != null;
     		}
     	}
     }
     ```
+
+2. E por fim, para fazer uma requisição de escrita e acessar a dashboard, o usuário precisa estar logado. Então, na aba de autenticação do Firebase, crie um usuário com o método e-mail/senha.
 
 ### Utilização
 
@@ -106,12 +106,6 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
 2. Abra seu navegador e navegue até `http://localhost:3000`.
 
 3. Use o editor de quiz para criar e gerenciar suas perguntas de quiz.
-
-### Estrutura do projeto
-
--   `index.html`: O arquivo HTML principal que contém o editor de quiz.
--   `view-all-questions.html`: N/A (A ser implementado futuramente).
--   `README.md`: Arquivo de documentação para o projeto.
 
 ## Contribuir
 
