@@ -1,10 +1,40 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"
 
 const firebaseConfig = {
-    //importar do .env ou do console do firebase
+	//configurações do firebase
 };
 const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+
+export async function login(email, password) {
+	return signInWithEmailAndPassword(auth, email, password)
+		.then((userCredentials) => {
+			//logado, retornar usuário
+			return userCredentials.user;
+		})
+		.catch((error) => {
+			window.alert("Erro ao fazer login: " + error.message);
+			return null;
+		});
+
+}
+
+export function logado() {
+	return auth.operations.then(() => {
+		return auth.currentUser;
+	})
+}
+
+export function deslogar() {
+	signOut(auth).then(() => {
+		//deslogado, remover usuário da dashboard
+		console.log("deslogado");
+	}).catch((error) => {
+		window.alert("Erro ao deslogar: " + error.message);
+	})
+}
 
 export function getQuizzes() {
     const fileURL = "teste.json";
@@ -36,7 +66,7 @@ export function insertQuizzes(quizzes) {
     const storageRef = ref(storage, fileURL);
 
     const uploadData = new Blob([JSON.stringify(quizzes)], { type: 'application/json' });
-    
+
     uploadBytes(storageRef, uploadData).then(() => {
         console.log("Arquivo enviado!");
     })
@@ -44,5 +74,3 @@ export function insertQuizzes(quizzes) {
         console.log("Erro ao enviar arquivo: ", error);
     });
 }
-
-
