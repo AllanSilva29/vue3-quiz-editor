@@ -99,6 +99,10 @@ e para rodar utilize o "npx" (npx http-server, por exemplo)
 
 4. Acesse o editor de quiz pela rota "login.html" para logar, e crie e gerencie suas perguntas de quiz.
 
+## Créditos
+🌟 Projeto criado por: Allan Silva 😎 e Otto Schmidt 😄 🌟
+
+
 ## Contribuir
 
 As contribuições são bem-vindas! Por favor, abra uma issue ou submeta um pull request para quaisquer alterações ou melhorias.
