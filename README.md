@@ -80,6 +80,8 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
 
 1. Para permitir escritas e leituras no storage, também é necessário alterar as regras. Com o seguinte código, ele irá aceitar leituras e escritas provenientes de qualquer pessoa.
 
+**OBS**: Acesse o console do firebase, na aba "Regras" da opção "Storage", para atualizar o arquivo de regras abaixo
+
     ```
     rules_version = '2';
 
@@ -93,7 +95,7 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
     }
     ```
 
-2. E por fim, para fazer uma requisição de escrita e acessar a dashboard, o usuário precisa estar logado. Então, na aba de autenticação do Firebase, crie um usuário com o método e-mail/senha.
+2. E por fim, para fazer uma requisição de escrita e acessar a dashboard, o usuário precisa estar logado. Então, na opção de autenticação do Firebase, crie um usuário com o método e-mail/senha.
 
 ### Utilização
 
