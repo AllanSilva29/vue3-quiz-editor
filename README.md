@@ -97,7 +97,7 @@ e para rodar utilize o "npx" (npx http-server, por exemplo)
 
 3. Abra seu navegador e navegue até `http://localhost:3000` (pode estar rodando na 3000 que é a padrão ou outra porta, verificar ao rodar o servidor).
 
-4. Use o editor de quiz na rota "login.html" para criar e gerenciar suas perguntas de quiz.
+4. Acesse o editor de quiz pela rota "login.html" para logar, e crie e gerencie suas perguntas de quiz.
 
 ## Contribuir
 
