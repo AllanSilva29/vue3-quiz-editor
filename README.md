@@ -8,13 +8,6 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
 -   Gerir categorias de quiz e níveis de dificuldade
 -   Ver estatísticas do quiz
 
-## Como começar
-
-### Pré-requisitos
-
--   Node.js (versão 14 ou posterior)
--   NPM (versão 6 ou posterior)
-
 ### Instalação
 
 1. Clone o repositório:
@@ -99,15 +92,12 @@ Este projeto é um editor de quiz simples construído com Vue.js. Permite aos ut
 
 ### Utilização
 
-1. Inicie o servidor de desenvolvimento:
+1. Utilize um servidor http para visualizar o arquivo index.html, instale utilizando o "npm install" (http-server, live-server, etc.)
+e para rodar utilize o "npx" (npx http-server, por exemplo)
 
-    ```sh
-    npm run dev
-    ```
+3. Abra seu navegador e navegue até `http://localhost:3000` (pode estar rodando na 3000 que é a padrão ou outra porta, verificar ao rodar o servidor).
 
-2. Abra seu navegador e navegue até `http://localhost:3000`.
-
-3. Use o editor de quiz para criar e gerenciar suas perguntas de quiz.
+4. Use o editor de quiz para criar e gerenciar suas perguntas de quiz.
 
 ## Contribuir
 
