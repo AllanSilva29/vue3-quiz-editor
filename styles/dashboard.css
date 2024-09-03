@@ -1,5 +1,10 @@
 @import url("base.css");
 
+
+.background-light {
+	background: var(--lighter-container) !important;
+}
+
 .nav {
 	position: relative;
 	font-weight: bold;

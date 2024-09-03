@@ -1,600 +1,554 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Nuxt 3 Learning Game - Quiz Editor</title>
-		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-		<style>
-			body {
-				font-family: "Inter", sans-serif;
-				background-color: #f4f5f7;
-				color: #2c3e50;
-				line-height: 1.6;
-				padding: 20px;
-			}
-			#app {
-				max-width: 1000px;
-				margin: 0 auto;
-				background-color: #ffffff;
-				padding: 30px;
-				border-radius: 12px;
-				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			}
-			h1,
-			h2 {
-				color: #00dc82;
-				text-align: center;
-			}
-			.form-group {
-				margin-bottom: 20px;
-			}
-			label {
-				display: block;
-				margin-bottom: 5px;
-				font-weight: bold;
-			}
-			input[type="text"],
-			textarea,
-			select {
-				width: 100%;
-				padding: 10px;
-				border: 1px solid #d1d5db;
-				border-radius: 4px;
-				font-size: 16px;
-			}
-			textarea {
-				height: 100px;
-			}
-			.options {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 10px;
-			}
-			.option {
-				display: flex;
-				align-items: center;
-			}
-			.option input[type="radio"] {
-				margin-right: 10px;
-			}
-			.button {
-				display: inline-block;
-				padding: 12px 24px;
-				background-color: #00dc82;
-				color: white;
-				border: none;
-				border-radius: 4px;
-				cursor: pointer;
-				font-size: 16px;
-				transition: background-color 0.3s ease;
-			}
-			.btn-danger {
-				background: #ef4444;
-			}
-			.button:hover {
-				background-color: #00b86b;
-			}
-			.btn-danger:hover {
-				background-color: #b32a2a;
-			}
-			.action-buttons {
-				display: flex;
-				justify-content: center;
-				gap: 20px;
-				margin: 30px auto;
-			}
-			.question-list {
-				margin-top: 30px;
-			}
-			.question-item {
-				background-color: #f0f4f8;
-				padding: 15px;
-				border-radius: 8px;
-				margin-bottom: 15px;
-			}
-			.question-item h3 {
-				margin-top: 0;
-			}
-			.actions {
-				display: flex;
-				justify-content: flex-end;
-				gap: 10px;
-				margin-top: 10px;
-			}
-			.edit-btn,
-			.delete-btn {
-				padding: 5px 10px;
-				border: none;
-				border-radius: 4px;
-				cursor: pointer;
-				font-size: 14px;
-			}
-			.edit-btn {
-				background-color: #3b82f6;
-				color: white;
-			}
-			.delete-btn {
-				background-color: #ef4444;
-				color: white;
-			}
-			.nav-buttons {
-				display: flex;
-				justify-content: space-between;
-				margin-top: 20px;
-			}
-			.nav-link {
-				text-decoration: none;
-				color: #00dc82;
-				font-weight: bold;
-			}
-			.stats {
-				background-color: #e0f2fe;
-				padding: 15px;
-				border-radius: 8px;
-				margin: 20px 0;
-			}
-			.ai-assist {
-				background-color: #fdf2f8;
-				padding: 15px;
-				border-radius: 8px;
-				margin-bottom: 20px;
-			}
-			.ai-assist h2 {
-				color: #db2777;
-			}
-			.ai-assist textarea {
-				height: 100px;
-				margin-bottom: 10px;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="app">
-			<h1>Quiz Editor</h1>
+    <head>
+        <title>Nuxt 3 Learning Game - Quiz Editor</title>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.css"
+        />
+        <link rel="stylesheet" href="../styles/dashboard.css" />
+    </head>
+    <body>
+        <div id="app" class="d-flex align-center justify-center">
+            <v-sheet
+                max-width="1200"
+                class="mx-4 my-2 px-3 pb-7 w-100 rounded-xl"
+            >
+                <v-row class="my-3 mx-1">
+                    <v-row class="nav">
+                        <v-col
+                            class="tab-selected d-flex w-100 align-center justify-center"
+                        >
+                            <a href="#">Quiz Editor</a>
+                        </v-col>
+                        <v-col class="d-flex w-100 align-center justify-center">
+                            <a href="view-all-quizzes.html">View Quizzes</a>
+                        </v-col>
+                    </v-row>
+                    <v-btn
+                        icon="mdi-logout"
+                        @click="sair"
+                        variant="plain"
+                        class="ma-0 ms-7"
+                    >
+                    </v-btn>
+                </v-row>
+                <div class="mx-12 mt-8">
+                    <v-row class="ma-0">
+                        <v-col>
+                            <p class="bigger-p mb-3">
+                                Select which quiz to edit
+                            </p>
+                            <v-select
+                                v-model="currentQuiz"
+                                label=""
+                                class="w-100 rounded-lg"
+                                variant="outlined"
+                                color="black"
+                                hide-details
+                                :items="selectionQuizzes"
+                                :loading="loading"
+                                :disabled="loading"
+                            >
+                            </v-select>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                            <v-row class="ma-0 d-flex justify-end align-center">
+                                <v-btn
+                                    color="#8BF890"
+                                    height="auto"
+                                    @click="createNewQuiz('')"
+                                    class="py-5 px-0 ma-0"
+                                >
+                                    <v-icon size="20" icon="mdi-plus"></v-icon>
+                                </v-btn>
+                                <v-btn
+                                    color="#8BC4F8"
+                                    height="auto"
+                                    class="py-5 px-0 ma-0 mx-4"
+                                >
+                                    <v-icon
+                                        size="20"
+                                        icon="mdi-pencil"
+                                    ></v-icon>
+                                </v-btn>
+                                <v-btn
+                                    color="#F39696"
+                                    height="auto"
+                                    @click="deleteQuiz"
+                                    class="py-5 px-0 ma-0"
+                                >
+                                    <v-icon
+                                        size="20"
+                                        icon="mdi-trash-can"
+                                    ></v-icon>
+                                </v-btn>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                    <v-col class="ma-0 my-7">
+                        <v-row class="ma-0 mb-2">
+                            <p class="bigger-p">Quiz Statistics</p>
+                        </v-row>
+                        <v-row
+                            class="ma-0 mx-10 justify-center font-weight-medium"
+                        >
+                            <v-col>
+                                <p class="text-center">
+                                    {{ quizzes[currentQuiz].questions.length }}
+                                </p>
+                                <p class="text-center f-12">Total Questions</p>
+                            </v-col>
+                            <v-col>
+                                <p class="text-center">
+                                    {{ quizzes[currentQuiz].difficulty }}
+                                </p>
+                                <p class="text-center f-12">
+                                    Average difficulty
+                                </p>
+                            </v-col>
+                            <v-col>
+                                <p class="text-center">
+                                    {{ uniqueCategories.length}}
+                                </p>
+                                <p class="text-center f-12">
+                                    Number of categories
+                                </p>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <div class="ms-3">
+                        <p class="bigger-p">Add Question</p>
+                        <div class="ms-7 mt-2">
+                            <v-row>
+                                <v-col>
+                                    <p class="mb-1">Question</p>
+                                    <v-textarea></v-textarea>
+                                </v-col>
+                                <v-col>
+                                    <p class="mb-1">Category</p>
+                                    <v-text-field
+                                        type="text"
+                                        class="mb-4"
+                                    ></v-text-field>
+                                    <p class="mb-1">Difficulty</p>
+                                    <div class="d-flex">
+                                        <div
+                                            v-for="(item, index) in iconDifficulty"
+                                            :key="index"
+                                            class="icon-wrapper emoji mx-auto"
+                                            style="--size: 20px"
+                                        >
+                                            <v-icon
+                                                size="19"
+                                                :icon="item.icon"
+                                                :color="item.color"
+                                            >
+                                            </v-icon>
+                                        </div>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                            <v-row class="ma-0">
+                                <v-col>
+                                    <p class="mb-1">Explanation</p>
+                                    <v-textarea></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-row class="ma-0">
+                                <v-col>
+                                    <p class="mb-1">Options</p>
+                                    <div class="d-flex mx-4">
+                                        <v-row class="ma-0">
+                                            <v-col>
+                                                <div class="d-flex ga-2 mb-2">
+                                                    <v-radio inline></v-radio>
+                                                    <v-text-field
+                                                        type="text"
+                                                        variant="outlined"
+                                                        hide-details
+                                                    >
+                                                    </v-text-field>
+                                                </div>
+                                                <div class="d-flex ga-2">
+                                                    <v-radio inline></v-radio>
+                                                    <v-text-field
+                                                        type="text"
+                                                        variant="outlined"
+                                                        hide-details
+                                                    >
+                                                    </v-text-field>
+                                                </div>
+                                            </v-col>
+                                            <v-col>
+                                                <div class="d-flex ga-2 mb-2">
+                                                    <v-radio inline></v-radio>
+                                                    <v-text-field
+                                                        type="text"
+                                                        variant="outlined"
+                                                        hide-details
+                                                    >
+                                                    </v-text-field>
+                                                </div>
+                                                <div class="d-flex ga-2">
+                                                    <v-radio inline></v-radio>
+                                                    <v-text-field
+                                                        type="text"
+                                                        variant="outlined"
+                                                        hide-details
+                                                    >
+                                                    </v-text-field>
+                                                </div>
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+                                </v-col>
+                            </v-row>
+                            <v-row class="d-flex justify-center ga-4 ma-0 mt-4">
+                                <v-btn class="button text-subtitle-1 py-2 px-6">
+                                    Save
+                                </v-btn>
+                                <v-btn
+                                    color="#D2E4D6"
+                                    class="button text-subtitle-1 py-2 px-6"
+                                >
+                                    Clear
+                                </v-btn>
+                            </v-row>
+                        </div>
+                    </div>
+                    <div class="ms-3 my-9">
+                        <p class="bigger-p">Question List</p>
+                        <div
+                            v-for="(question, index) in quizzes[currentQuiz].questions"
+                            class="background-light mx-8 my-4 px-3 py-2"
+                        >
+                            <p class="mb-7">
+                                {{ index + 1 }}) {{ question.question }}
+                            </p>
+                            <v-row class="ma-0 justify-space-between">
+                                <div class="d-flex align-center f-12">
+                                    <p class="me-2">
+                                        Difficulty: {{ question.difficulty }}
+                                    </p>
+                                    <p>Category: {{ question.category }}</p>
+                                </div>
+                                <div>
+                                    <v-btn
+                                        color="#8BC3F8"
+                                        rounded="pill"
+                                        class="action-button me-3"
+                                        >Editar</v-btn
+                                    >
+                                    <v-btn
+                                        color="#F39696"
+                                        rounded="pill"
+                                        class="action-button"
+                                        >Excluir</v-btn
+                                    >
+                                </div>
+                            </v-row>
+                        </div>
+                    </div>
+                </div>
+            </v-sheet>
+        </div>
 
-			<div class="stats">
-				<h2>Select Quiz</h2>
-				<select
-					id="quiz-dropdown"
-					@change="selectQuiz"
-					v-model="currentQuiz">
-					<option
-						v-for="(quiz, index) in quizzes"
-						:key="index"
-						:value="index">
-						{{ quiz.name }}
-					</option>
-				</select>
+        <script type="module">
+            import {
+                getQuizzes,
+                insertQuizzes,
+                logado,
+                deslogar,
+            } from "../firebase.js";
+            const {
+                createApp,
+                ref,
+                reactive,
+                computed,
+                onMounted,
+                onBeforeMount,
+            } = Vue;
+            const { createVuetify } = Vuetify;
+            const vuetify = createVuetify();
 
-				<div class="action-buttons">
-					<button @click="createNewQuiz('')" class="button">
-						Create New Quiz
-					</button>
-					<button @click="deleteQuiz" class="button btn-danger">
-						Delete Quiz
-					</button>
-				</div>
+            createApp({
+                setup() {
+                    const quizzes = ref([
+                        {
+                            name: "Nuxt 3 Basics",
+                            description:
+                                "Test your knowledge of the basics of Nuxt 3.",
+                            congratulations:
+                                "Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
+                            failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
+                            difficulty: 2,
+                            questions: [
+                                {
+                                    question:
+                                        "What is the purpose of the 'pages' directory in Nuxt 3?",
+                                    options: [
+                                        "To store static assets",
+                                        "To define API routes",
+                                        "To create file-based routing",
+                                        "To store global components",
+                                    ],
+                                    correctAnswer: 2,
+                                    explanation:
+                                        "In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
+                                    category: "Routing",
+                                    difficulty: 2,
+                                },
+                            ],
+                        },
+                    ]);
+                    const selectionQuizzes = ref([]);
+                    const currentQuiz = ref(0);
+                    const currentQuestion = reactive({
+                        question: "",
+                        options: ["", "", "", ""],
+                        correctAnswer: null,
+                        explanation: "",
+                        category: "",
+                        difficulty: 3,
+                    });
+                    const isEditing = ref(false);
+                    const loading = ref(true);
+                    let editingIndex = -1;
+                    const iconDifficulty = [
+                        {
+                            icon: "mdi-emoticon-excited",
+                            color: "#68FF77",
+                        },
+                        {
+                            icon: "mdi-emoticon-happy",
+                            color: "#C6FF68",
+                        },
+                        {
+                            icon: "mdi-emoticon-neutral",
+                            color: "#FFF968",
+                        },
+                        {
+                            icon: "mdi-emoticon-sad",
+                            color: "#FFC368",
+                        },
+                        {
+                            icon: "mdi-emoticon-dead",
+                            color: "#FF6868",
+                        },
+                    ];
 
-				<form @submit.prevent="editQuiz">
-					<div class="form-group">
-						<label for="quiz-name">Edit Quiz Name:</label>
-						<input
-							type="text"
-							id="quiz-name"
-							v-model="quizzes[currentQuiz].name"
-							required />
-					</div>
-					<div class="form-group">
-						<label for="quiz-description"
-							>Edit Quiz Description:</label
-						>
-						<textarea
-							id="quiz-description"
-							v-model="quizzes[currentQuiz].description"></textarea>
-					</div>
-					<div class="form-group">
-						<label for="quiz-congratulations"
-							>Edit Quiz Congratulation Message:</label
-						>
-						<input
-							type="text"
-							id="quiz-congratulations"
-							v-model="quizzes[currentQuiz].congratulations" />
-					</div>
-					<div class="form-group">
-						<label for="quiz-failed"
-							>Edit Quiz Failed Message:</label
-						>
-						<input
-							type="text"
-							id="quiz-failed"
-							v-model="quizzes[currentQuiz].failed" />
-					</div>
-					<div class="action-buttons">
-						<button type="submit" class="button">Save Quiz</button>
-					</div>
-				</form>
-			</div>
+                    const uniqueCategories = computed(() => {
+                        return [
+                            ...new Set(
+                                quizzes.value[currentQuiz.value].questions.map(
+                                    (q) => q.category
+                                )
+                            ),
+                        ];
+                    });
 
-			<div class="stats">
-				<h2>Quiz Statistics</h2>
-				<p>
-					Total Questions: {{ quizzes[currentQuiz].questions.length }}
-				</p>
-				<p>Categories: {{ uniqueCategories.join(', ') }}</p>
-				<p>
-					Average Difficulty: {{ quizzes[currentQuiz].difficulty }} /
-					5
-				</p>
-			</div>
+                    function generateAverageDifficulty() {
+                        if (
+                            quizzes.value[currentQuiz.value].questions
+                                .length === 0
+                        ) {
+                            quizzes.value[currentQuiz.value].difficulty = 0;
+                            return;
+                        }
 
-			<div class="quiz-editor">
-				<h2>{{ isEditing ? 'Edit Question' : 'Add New Question' }}</h2>
-				<form @submit.prevent="saveQuestion">
-					<div class="form-group">
-						<label for="question">Question:</label>
-						<textarea
-							id="question"
-							v-model="currentQuestion.question"
-							required></textarea>
-					</div>
-					<div class="form-group">
-						<label>Options:</label>
-						<div class="options">
-							<div
-								v-for="(option, index) in currentQuestion.options"
-								:key="index">
-								<div v-if="index < 2" class="option">
-									<input
-										type="radio"
-										:id="'option' + index"
-										:value="index"
-										v-model="currentQuestion.correctAnswer"
-										required />
-									<input
-										type="text"
-										v-model="currentQuestion.options[index]"
-										required />
-								</div>
-								<div v-else class="option">
-									<input
-										type="radio"
-										:id="'option' + index"
-										:value="index"
-										v-model="currentQuestion.correctAnswer" />
-									<input
-										type="text"
-										v-model="currentQuestion.options[index]" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="explanation">Explanation:</label>
-						<textarea
-							id="explanation"
-							v-model="currentQuestion.explanation"
-							required></textarea>
-					</div>
-					<div class="form-group">
-						<label for="category">Category:</label>
-						<input
-							type="text"
-							id="category"
-							v-model="currentQuestion.category"
-							required />
-					</div>
-					<div class="form-group">
-						<label for="difficulty">Difficulty (1-5):</label>
-						<input
-							type="number"
-							id="difficulty"
-							v-model="currentQuestion.difficulty"
-							min="1"
-							max="5"
-							required />
-					</div>
-					<button type="submit" class="button">
-						{{ isEditing ? 'Update Question' : 'Add Question' }}
-					</button>
-					<button
-						type="button"
-						@click="resetForm"
-						class="button"
-						style="margin-left: 10px">
-						{{ isEditing ? 'Cancel' : 'Clear' }}
-					</button>
-				</form>
-			</div>
+                        const sum = quizzes.value[
+                            currentQuiz.value
+                        ].questions.reduce((acc, q) => acc + q.difficulty, 0);
 
-			<div
-				v-if="quizzes[currentQuiz].questions.length > 0"
-				class="question-list">
-				<h2>Question List</h2>
-				<div
-					v-for="(question, index) in quizzes[currentQuiz].questions"
-					:key="index"
-					class="question-item">
-					<h3>Question {{ index + 1 }}</h3>
-					<p><strong>Category:</strong> {{ question.category }}</p>
-					<p>
-						<strong>Difficulty:</strong> {{ question.difficulty }}/5
-					</p>
-					<p>{{ question.question }}</p>
-					<div class="actions">
-						<button @click="editQuestion(index)" class="edit-btn">
-							Edit
-						</button>
-						<button
-							@click="deleteQuestion(index)"
-							class="delete-btn">
-							Delete
-						</button>
-					</div>
-				</div>
-			</div>
+                        quizzes.value[currentQuiz.value].difficulty = (
+                            sum /
+                            quizzes.value[currentQuiz.value].questions.length
+                        ).toFixed(0);
+                    }
 
-			<div class="nav-buttons">
-				<a href="../index.html" class="nav-link">Take a Quiz</a>
-				<button @click="sair" class="button">Sair</button>
-				<a href="view-all-quizzes.html" class="nav-link"
-					>View All Quizzes</a
-				>
-			</div>
-		</div>
+                    onBeforeMount(() => {
+                        logado().then((user) => {
+                            if (user === null) {
+                                window.location.href = "../login.html";
+                            }
+                        });
+                    });
 
-		<script type="module">
-			import {
-				getQuizzes,
-				insertQuizzes,
-				logado,
-				deslogar,
-			} from "../firebase.js";
-			const {
-				createApp,
-				ref,
-				reactive,
-				computed,
-				onMounted,
-				onBeforeMount,
-			} = Vue;
+                    onMounted(() => {
+                        getQuizzes().then((quizzesData) => {
+                            loading.value = false;
+                            if (quizzesData) {
+                                quizzes.value = [...quizzesData];
 
-			createApp({
-				setup() {
-					const quizzes = ref([
-						{
-							name: "Nuxt 3 Basics",
-							description:
-								"Test your knowledge of the basics of Nuxt 3.",
-							congratulations:
-								"Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
-							failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
-							difficulty: 2,
-							questions: [
-								{
-									question:
-										"What is the purpose of the 'pages' directory in Nuxt 3?",
-									options: [
-										"To store static assets",
-										"To define API routes",
-										"To create file-based routing",
-										"To store global components",
-									],
-									correctAnswer: 2,
-									explanation:
-										"In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
-									category: "Routing",
-									difficulty: 2,
-								},
-							],
-						},
-					]);
-					const currentQuiz = ref(0);
-					const currentQuestion = reactive({
-						question: "",
-						options: ["", "", "", ""],
-						correctAnswer: null,
-						explanation: "",
-						category: "",
-						difficulty: 3,
-					});
-					const isEditing = ref(false);
-					const loading = ref(true);
-					let editingIndex = -1;
+                                selectionQuizzes.value = [];
+                                for (let i = 0; i < quizzes.value.length; i++) {
+                                    selectionQuizzes.value.push({
+                                        title: quizzes.value[i].name,
+                                        value: i,
+                                    });
+                                }
 
-					const uniqueCategories = computed(() => {
-						return [
-							...new Set(
-								quizzes.value[currentQuiz.value].questions.map(
-									(q) => q.category
-								)
-							),
-						];
-					});
+                                console.log("Quizzes carregados");
+                            }
+                        });
+                    });
 
-					function generateAverageDifficulty() {
-						if (
-							quizzes.value[currentQuiz.value].questions
-								.length === 0
-						) {
-							quizzes.value[currentQuiz.value].difficulty = 0;
-							return;
-						}
+                    function selectQuiz() {
+                        currentQuiz.value =
+                            document.getElementById("quiz-dropdown").value;
+                    }
 
-						const sum = quizzes.value[
-							currentQuiz.value
-						].questions.reduce((acc, q) => acc + q.difficulty, 0);
+                    function createNewQuiz(textPrompt) {
+                        textPrompt =
+                            textPrompt || "Digite o nome do novo quiz:";
+                        let quizName = prompt(textPrompt);
+                        if (quizName) {
+                            quizzes.value.push({
+                                name: quizName,
+                                questions: [],
+                            });
+                            insertQuizzes(quizzes.value);
 
-						quizzes.value[currentQuiz.value].difficulty = (
-							sum /
-							quizzes.value[currentQuiz.value].questions.length
-						).toFixed(0);
-					}
+                            currentQuiz.value = quizzes.value.length - 1;
+                            generateAverageDifficulty();
 
-					onBeforeMount(() => {
-						logado().then((user) => {
-							if (user === null) {
-								window.location.href = "../login.html";
-							}
-						});
-					});
+                            alert("Quiz criado com sucesso!");
+                        }
+                    }
 
-					onMounted(() => {
-						getQuizzes().then((quizzesData) => {
-							loading.value = false;
-							if (quizzesData) {
-								quizzes.value = [...quizzesData];
-								console.log("Quizzes carregados");
-							}
-						});
-					});
+                    function editQuiz() {
+                        let name = document.getElementById("quiz-name").value;
+                        let description =
+                            document.getElementById("quiz-description").value;
+                        let congratulations = document.getElementById(
+                            "quiz-congratulations"
+                        ).value;
+                        let failed =
+                            document.getElementById("quiz-failed").value;
+                        quizzes.value[currentQuiz.value].name = name;
+                        quizzes.value[currentQuiz.value].description =
+                            description;
+                        quizzes.value[currentQuiz.value].congratulations =
+                            congratulations;
+                        quizzes.value[currentQuiz.value].failed = failed;
+                        alert("Quiz salvo com sucesso!");
+                        insertQuizzes(quizzes.value);
+                    }
 
-					function selectQuiz() {
-						currentQuiz.value =
-							document.getElementById("quiz-dropdown").value;
-					}
+                    function deleteQuiz() {
+                        if (
+                            confirm(
+                                "Tem certeza que quer deletar o quiz (" +
+                                    quizzes.value[currentQuiz.value].name +
+                                    ")?"
+                            )
+                        ) {
+                            quizzes.value.splice(currentQuiz.value, 1);
+                            currentQuiz.value = 0;
+                            if (quizzes.value.length === 0) {
+                                createNewQuiz(
+                                    "Você precisa ter pelo menos um quiz salvo, por favor digite o nome do novo quiz:"
+                                );
+                            } else {
+                                insertQuizzes(quizzes.value);
+                                alert(
+                                    `Quiz ${
+                                        quizzes.value[currentQuiz.value].name
+                                    } deletado com sucesso.`
+                                );
+                            }
+                        }
+                    }
 
-					function createNewQuiz(textPrompt) {
-						textPrompt =
-							textPrompt || "Digite o nome do novo quiz:";
-						let quizName = prompt(textPrompt);
-						if (quizName) {
-							quizzes.value.push({
-								name: quizName,
-								questions: [],
-							});
-							insertQuizzes(quizzes.value);
+                    function saveQuestion() {
+                        const newQuestion = { ...currentQuestion };
+                        if (isEditing.value) {
+                            quizzes.value[currentQuiz.value].questions[
+                                editingIndex
+                            ] = newQuestion;
+                            isEditing.value = false;
+                            editingIndex = -1;
+                        } else {
+                            quizzes.value[currentQuiz.value].questions.push(
+                                newQuestion
+                            );
+                        }
+                        resetForm();
+                        generateAverageDifficulty();
+                        insertQuizzes(quizzes.value);
+                    }
 
-							currentQuiz.value = quizzes.value.length - 1;
-							generateAverageDifficulty();
+                    function resetForm() {
+                        Object.assign(currentQuestion, {
+                            question: "",
+                            options: ["", "", "", ""],
+                            correctAnswer: null,
+                            explanation: "",
+                            category: "",
+                            difficulty: 3,
+                        });
+                        isEditing.value = false;
+                        editingIndex = -1;
+                    }
 
-							alert("Quiz criado com sucesso!");
-						}
-					}
+                    function editQuestion(index) {
+                        Object.assign(
+                            currentQuestion,
+                            quizzes.value[currentQuiz.value].questions[index]
+                        );
+                        isEditing.value = true;
+                        editingIndex = index;
+                    }
 
-					function editQuiz() {
-						let name = document.getElementById("quiz-name").value;
-						let description =
-							document.getElementById("quiz-description").value;
-						let congratulations = document.getElementById(
-							"quiz-congratulations"
-						).value;
-						let failed =
-							document.getElementById("quiz-failed").value;
-						quizzes.value[currentQuiz.value].name = name;
-						quizzes.value[currentQuiz.value].description =
-							description;
-						quizzes.value[currentQuiz.value].congratulations =
-							congratulations;
-						quizzes.value[currentQuiz.value].failed = failed;
-						alert("Quiz salvo com sucesso!");
-						insertQuizzes(quizzes.value);
-					}
+                    function deleteQuestion(index) {
+                        if (
+                            confirm(
+                                "Tem certeza que quer deletar essa questão?"
+                            )
+                        ) {
+                            quizzes.value[currentQuiz.value].questions.splice(
+                                index,
+                                1
+                            );
+                            insertQuizzes(quizzes.value);
+                        }
+                    }
 
-					function deleteQuiz() {
-						if (
-							confirm(
-								"Tem certeza que quer deletar o quiz (" +
-									quizzes.value[currentQuiz.value].name +
-									")?"
-							)
-						) {
-							quizzes.value.splice(currentQuiz.value, 1);
-							currentQuiz.value = 0;
-							if (quizzes.value.length === 0) {
-								createNewQuiz(
-									"Você precisa ter pelo menos um quiz salvo, por favor digite o nome do novo quiz:"
-								);
-							} else {
-								insertQuizzes(quizzes.value);
-								alert(
-									`Quiz ${
-										quizzes.value[currentQuiz.value].name
-									} deletado com sucesso.`
-								);
-							}
-						}
-					}
+                    function sair() {
+                        deslogar().then((retorno) => {
+                            if (retorno) {
+                                window.location.href = "../login.html";
+                            }
+                        });
+                    }
 
-					function saveQuestion() {
-						const newQuestion = {...currentQuestion};
-						if (isEditing.value) {
-							quizzes.value[currentQuiz.value].questions[
-								editingIndex
-							] = newQuestion;
-							isEditing.value = false;
-							editingIndex = -1;
-						} else {
-							quizzes.value[currentQuiz.value].questions.push(
-								newQuestion
-							);
-						}
-						resetForm();
-						generateAverageDifficulty();
-						insertQuizzes(quizzes.value);
-					}
-
-					function resetForm() {
-						Object.assign(currentQuestion, {
-							question: "",
-							options: ["", "", "", ""],
-							correctAnswer: null,
-							explanation: "",
-							category: "",
-							difficulty: 3,
-						});
-						isEditing.value = false;
-						editingIndex = -1;
-					}
-
-					function editQuestion(index) {
-						Object.assign(
-							currentQuestion,
-							quizzes.value[currentQuiz.value].questions[index]
-						);
-						isEditing.value = true;
-						editingIndex = index;
-					}
-
-					function deleteQuestion(index) {
-						if (
-							confirm(
-								"Tem certeza que quer deletar essa questão?"
-							)
-						) {
-							quizzes.value[currentQuiz.value].questions.splice(
-								index,
-								1
-							);
-							insertQuizzes(quizzes.value);
-						}
-					}
-
-					function sair() {
-						deslogar().then((retorno) => {
-							if (retorno) {
-								window.location.href = "../login.html";
-							}
-						});
-					}
-
-					return {
-						quizzes,
-						currentQuiz,
-						currentQuestion,
-						isEditing,
-						uniqueCategories,
-						selectQuiz,
-						createNewQuiz,
-						editQuiz,
-						deleteQuiz,
-						saveQuestion,
-						resetForm,
-						editQuestion,
-						deleteQuestion,
-						sair,
-					};
-				},
-			}).mount("#app");
-		</script>
-	</body>
+                    return {
+                        quizzes,
+                        selectionQuizzes,
+                        currentQuiz,
+                        currentQuestion,
+                        isEditing,
+                        iconDifficulty,
+                        uniqueCategories,
+                        selectQuiz,
+                        createNewQuiz,
+                        editQuiz,
+                        deleteQuiz,
+                        saveQuestion,
+                        resetForm,
+                        editQuestion,
+                        deleteQuestion,
+                        sair,
+                    };
+                },
+            })
+                .use(vuetify)
+                .mount("#app");
+        </script>
+    </body>
 </html>
