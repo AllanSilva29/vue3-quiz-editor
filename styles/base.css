@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css');
+
+* {
+	font-family: 'Poppins', sans-serif;
+	box-sizing: border-box;
+}
+
+:root {
+	--surface: #D2E4D6;
+	--container: #E6EDE8;
+	--lighter-container: #F5F5F5;
+	--primary: #039200;
+	--correct: #75DE73;
+}
+
+body, .background-surface {
+	background: var(--surface) !important;
+}
+
+body, #app {
+	min-height: 100vh;
+	height: 100%;
+}
+
+.bigger-p {
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+.icon-wrapper {
+	--size: 12px;
+	position: relative;
+	margin: 0 auto;
+	width: fit-content;
+	display: flex;
+	align-items: center;
+}
+
+.icon-wrapper::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: var(--size);
+	height: var(--size);
+	background-color: black;
+	border-radius: 100%;
+}
+
+.emoji .v-icon {
+	z-index: 5;
+}
+
+.button {
+	background: var(--primary);
+	color: white;
+	height: fit-content !important;
+}
+
+.option {
+	background: white;
+	min-width: 300px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 15px 0;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.option.correct {
+	background: var(--correct);
+}
+
