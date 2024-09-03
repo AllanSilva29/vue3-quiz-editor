@@ -222,7 +222,8 @@
 				</p>
 				<p>Categories: {{ uniqueCategories.join(', ') }}</p>
 				<p>
-					Average Difficulty: {{ averageDifficulty.toFixed(1) }} / 5
+					Average Difficulty: {{ quizzes[currentQuiz].difficulty }} /
+					5
 				</p>
 			</div>
 
@@ -367,6 +368,7 @@
 							congratulations:
 								"Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
 							failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
+							difficulty: 2,
 							questions: [
 								{
 									question:
@@ -409,20 +411,24 @@
 						];
 					});
 
-					const averageDifficulty = computed(() => {
+					function generateAverageDifficulty() {
 						if (
 							quizzes.value[currentQuiz.value].questions
 								.length === 0
-						)
-							return 0;
+						) {
+							quizzes.value[currentQuiz.value].difficulty = 0;
+							return;
+						}
+
 						const sum = quizzes.value[
 							currentQuiz.value
 						].questions.reduce((acc, q) => acc + q.difficulty, 0);
-						return (
+
+						quizzes.value[currentQuiz.value].difficulty = (
 							sum /
 							quizzes.value[currentQuiz.value].questions.length
-						);
-					});
+						).toFixed(0);
+					}
 
 					onBeforeMount(() => {
 						logado().then((user) => {
@@ -459,6 +465,7 @@
 							insertQuizzes(quizzes.value);
 
 							currentQuiz.value = quizzes.value.length - 1;
+							generateAverageDifficulty();
 
 							alert("Quiz criado com sucesso!");
 						}
@@ -522,6 +529,7 @@
 							);
 						}
 						resetForm();
+						generateAverageDifficulty();
 						insertQuizzes(quizzes.value);
 					}
 
@@ -575,7 +583,6 @@
 						currentQuestion,
 						isEditing,
 						uniqueCategories,
-						averageDifficulty,
 						selectQuiz,
 						createNewQuiz,
 						editQuiz,
