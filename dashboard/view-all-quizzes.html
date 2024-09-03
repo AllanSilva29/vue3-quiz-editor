@@ -96,10 +96,10 @@
 										{{ index+1 }}) {{ question.question }}
 									</p>
 									<div class="my-10 mx-8">
-										<div
+										<v-row
 											justify="center"
 											class="d-flex ga-4 ma-0">
-											<div
+											<v-col
 												v-for="(option, index) in question.options"
 												:key="index"
 												:class="['option-wrapper pa-0 w-100', option.length > 0 ? 'd-block' : 'd-none']">
@@ -107,8 +107,8 @@
 													:class="['option', index === question.correctAnswer ? 'correct' : 'incorrect']">
 													{{ option }}
 												</div>
-											</div>
-										</div>
+											</v-col>
+										</v-row>
 										<div class="mt-6 explanation">
 											<p class="font-weigth-medium f-16">
 												Explanation:
