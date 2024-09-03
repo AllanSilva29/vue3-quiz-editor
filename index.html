@@ -23,14 +23,15 @@
 							Select which quiz to answer
 						</p>
 						<v-select
-							v-model="selectionQuizzes[selectedQuiz]"
+							v-model="selectedQuiz"
 							id="quiz-selector"
 							class="w-100 rounded-lg"
 							variant="outlined"
 							color="black"
 							hide-details
 							:items="selectionQuizzes"
-							:disabled="loading">
+							:disabled="loading"
+							:loading="loading">
 						</v-select>
 					</div>
 
@@ -298,9 +299,10 @@
 
 								selectionQuizzes.value = [];
 								for (let i = 0; i < quizzes.value.length; i++) {
-									selectionQuizzes.value.push(
-										quizzes.value[i].name
-									);
+									selectionQuizzes.value.push({
+										title: quizzes.value[i].name,
+										value: i,
+									});
 								}
 								console.log("Quizzes carregados");
 							}
