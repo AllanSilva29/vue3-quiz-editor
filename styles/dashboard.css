@@ -1,0 +1,75 @@
+@import url("base.css");
+
+.nav {
+	position: relative;
+	font-weight: bold;
+	font-size: 18px;
+	text-align: center;
+}
+
+.nav::after {
+	content: '';
+	position: absolute;
+	background: black;
+	width: 2px;
+	height: 33px;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.tab-selected {
+	position: relative;
+}
+
+.tab-selected a {
+	text-decoration: none !important;
+	color: var(--primary) !important;
+}
+
+.tab-selected::after {
+	content: '';
+	position: absolute;
+	width: 33px;
+	height: 2;
+	background: var(--primary);
+	bottom: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.card {
+	background: var(--lighter-container);
+	filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .25));
+	padding: 2px 12px 12px 12px;
+	border-radius: 12px;
+	width: 100%;
+}
+
+.card .header {
+	text-align: center;
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 12px;
+}
+
+.option.incorrect {
+	background: var(--surface) !important;
+}
+
+.explanation {
+	min-width: 200px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 12px;
+	background: white;
+	filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .25));
+	border-radius: 12px;
+}
+
+.delete-btn, .delete-btn i {
+	background: transparent !important;
+	border: 0 !important;
+	filter: none !important;
+	padding: 0 !important;
+}
