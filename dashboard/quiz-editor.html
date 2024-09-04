@@ -23,10 +23,10 @@
                         <v-col
                             class="tab-selected d-flex w-100 align-center justify-center"
                         >
-                            <a href="#">Quiz Editor</a>
+                            <a href="#">Editor de Quiz</a>
                         </v-col>
                         <v-col class="d-flex w-100 align-center justify-center">
-                            <a href="view-all-quizzes.html">View Quizzes</a>
+                            <a href="view-all-quizzes.html">Ver Quizzes</a>
                         </v-col>
                     </v-row>
                     <v-btn
@@ -41,7 +41,7 @@
                     <v-row class="ma-0">
                         <v-col>
                             <p class="bigger-p mb-3">
-                                Select which quiz to edit
+                                Selecionar o quiz a ser modificado
                             </p>
                             <v-select
                                 v-model="currentQuiz"
@@ -62,6 +62,7 @@
                                     color="#8BF890"
                                     height="auto"
                                     @click="createNewQuiz('')"
+                                    :disabled="loading"
                                     class="py-5 px-0 ma-0"
                                 >
                                     <v-icon size="20" icon="mdi-plus"></v-icon>
@@ -69,6 +70,7 @@
                                 <v-btn
                                     color="#8BC4F8"
                                     height="auto"
+                                    :disabled="loading"
                                     class="py-5 px-0 ma-0 mx-4"
                                 >
                                     <v-icon
@@ -80,6 +82,7 @@
                                     color="#F39696"
                                     height="auto"
                                     @click="deleteQuiz"
+                                    :disabled="loading"
                                     class="py-5 px-0 ma-0"
                                 >
                                     <v-icon
@@ -92,137 +95,191 @@
                     </v-row>
                     <v-col class="ma-0 my-7">
                         <v-row class="ma-0 mb-2">
-                            <p class="bigger-p">Quiz Statistics</p>
+                            <p class="bigger-p">Estatisticas</p>
                         </v-row>
                         <v-row
                             class="ma-0 mx-10 justify-center font-weight-medium"
                         >
                             <v-col>
-                                <p class="text-center">
+                                <p v-if="loading" class="text-center">XX</p>
+                                <p v-else class="text-center">
                                     {{ quizzes[currentQuiz].questions.length }}
                                 </p>
-                                <p class="text-center f-12">Total Questions</p>
+                                <p class="text-center f-12">Quant. perguntas</p>
                             </v-col>
                             <v-col>
-                                <p class="text-center">
+                                <p v-if="loading" class="text-center">XX</p>
+                                <p v-else class="text-center">
                                     {{ quizzes[currentQuiz].difficulty }}
                                 </p>
                                 <p class="text-center f-12">
-                                    Average difficulty
+                                    Dificuldade média
                                 </p>
                             </v-col>
                             <v-col>
-                                <p class="text-center">
+                                <p v-if="loading" class="text-center">XX</p>
+                                <p v-else class="text-center">
                                     {{ uniqueCategories.length}}
                                 </p>
                                 <p class="text-center f-12">
-                                    Number of categories
+                                    Quant. categorias
                                 </p>
                             </v-col>
                         </v-row>
                     </v-col>
                     <div class="ms-3">
-                        <p class="bigger-p">Add Question</p>
-                        <div class="ms-7 mt-2">
-                            <v-row>
-                                <v-col>
-                                    <p class="mb-1">Question</p>
-                                    <v-textarea></v-textarea>
-                                </v-col>
-                                <v-col>
-                                    <p class="mb-1">Category</p>
-                                    <v-text-field
-                                        type="text"
-                                        class="mb-4"
-                                    ></v-text-field>
-                                    <p class="mb-1">Difficulty</p>
-                                    <div class="d-flex">
-                                        <div
-                                            v-for="(item, index) in iconDifficulty"
-                                            :key="index"
-                                            class="icon-wrapper emoji mx-auto"
-                                            style="--size: 20px"
+                        <v-form>
+                            <p class="bigger-p">Adicionar Pergunta</p>
+                            <div class="ms-7 mx-0 mt-2">
+                                <v-row class="ma-0">
+                                    <v-col class="ps-0">
+                                        <p class="mb-1">Enunciado</p>
+                                        <v-textarea
+                                            v-model="currentQuestion.question"
                                         >
-                                            <v-icon
-                                                size="19"
-                                                :icon="item.icon"
-                                                :color="item.color"
+                                        </v-textarea>
+                                    </v-col>
+                                    <v-col class="pe-0">
+                                        <p class="mb-1">Categoria</p>
+                                        <v-text-field
+                                            type="text"
+                                            v-model="currentQuestion.category"
+                                            class="mb-4"
+                                        >
+                                        </v-text-field>
+                                        <p class="mb-1">Dificuldade</p>
+                                        <div class="d-flex mx-16 px-4 mt-1">
+                                            <div
+                                                v-for="(item, index) in iconDifficulty"
+                                                :key="index"
+                                                class="icon-wrapper emoji mx-auto"
+                                                :class="currentQuestion.difficulty == index ? 'active' : ''"
+                                                @click="currentQuestion.difficulty = index"
+                                                style="--size: 25px"
                                             >
-                                            </v-icon>
+                                                <v-icon
+                                                    size="23px"
+                                                    :icon="item.icon"
+                                                    :color="item.color"
+                                                >
+                                                </v-icon>
+                                            </div>
                                         </div>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                            <v-row class="ma-0">
-                                <v-col>
-                                    <p class="mb-1">Explanation</p>
-                                    <v-textarea></v-textarea>
-                                </v-col>
-                            </v-row>
-                            <v-row class="ma-0">
-                                <v-col>
-                                    <p class="mb-1">Options</p>
-                                    <div class="d-flex mx-4">
-                                        <v-row class="ma-0">
-                                            <v-col>
-                                                <div class="d-flex ga-2 mb-2">
-                                                    <v-radio inline></v-radio>
-                                                    <v-text-field
-                                                        type="text"
-                                                        variant="outlined"
-                                                        hide-details
-                                                    >
-                                                    </v-text-field>
-                                                </div>
-                                                <div class="d-flex ga-2">
-                                                    <v-radio inline></v-radio>
-                                                    <v-text-field
-                                                        type="text"
-                                                        variant="outlined"
-                                                        hide-details
-                                                    >
-                                                    </v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <v-col>
-                                                <div class="d-flex ga-2 mb-2">
-                                                    <v-radio inline></v-radio>
-                                                    <v-text-field
-                                                        type="text"
-                                                        variant="outlined"
-                                                        hide-details
-                                                    >
-                                                    </v-text-field>
-                                                </div>
-                                                <div class="d-flex ga-2">
-                                                    <v-radio inline></v-radio>
-                                                    <v-text-field
-                                                        type="text"
-                                                        variant="outlined"
-                                                        hide-details
-                                                    >
-                                                    </v-text-field>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                            <v-row class="d-flex justify-center ga-4 ma-0 mt-4">
-                                <v-btn class="button text-subtitle-1 py-2 px-6">
-                                    Save
-                                </v-btn>
-                                <v-btn
-                                    color="#D2E4D6"
-                                    class="button text-subtitle-1 py-2 px-6"
+                                    </v-col>
+                                </v-row>
+                                <v-row class="ma-0">
+                                    <v-col class="px-0">
+                                        <p class="mb-1">Explicação</p>
+                                        <v-textarea
+                                            v-model="currentQuestion.explanation"
+                                        >
+                                        </v-textarea>
+                                    </v-col>
+                                </v-row>
+                                <v-row class="ma-0">
+                                    <v-col class="px-0">
+                                        <p class="mb-1">Alternativas</p>
+                                        <div class="d-flex mx-4">
+                                            <v-radio-group
+                                                v-model="currentQuestion.correctAnswer"
+                                            >
+                                                <v-row class="ma-0">
+                                                    <v-col>
+                                                        <div
+                                                            class="d-flex ga-2 mb-2"
+                                                        >
+                                                            <v-radio
+                                                                inline
+                                                                value="0"
+                                                            ></v-radio>
+                                                            <v-text-field
+                                                                type="text"
+                                                                placeholder="Opção 1"
+                                                                variant="outlined"
+                                                                hide-details
+                                                                v-model="currentQuestion.options[0]"
+                                                            >
+                                                            </v-text-field>
+                                                        </div>
+                                                        <div
+                                                            class="d-flex ga-2"
+                                                        >
+                                                            <v-radio
+                                                                inline
+                                                                value="2"
+                                                            >
+                                                            </v-radio>
+                                                            <v-text-field
+                                                                type="text"
+                                                                placeholder="Opção 3"
+                                                                variant="outlined"
+                                                                hide-details
+                                                                v-model="currentQuestion.options[2]"
+                                                            >
+                                                            </v-text-field>
+                                                        </div>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <div
+                                                            class="d-flex ga-2 mb-2"
+                                                        >
+                                                            <v-radio
+                                                                inline
+                                                                value="1"
+                                                            ></v-radio>
+                                                            <v-text-field
+                                                                type="text"
+                                                                placeholder="Opção 2"
+                                                                variant="outlined"
+                                                                hide-details
+                                                                v-model="currentQuestion.options[1]"
+                                                            >
+                                                            </v-text-field>
+                                                        </div>
+                                                        <div
+                                                            class="d-flex ga-2"
+                                                        >
+                                                            <v-radio
+                                                                inline
+                                                                value="3"
+                                                            ></v-radio>
+                                                            <v-text-field
+                                                                type="text"
+                                                                placeholder="Opção 4"
+                                                                variant="outlined"
+                                                                hide-details
+                                                                v-model="currentQuestion.options[3]"
+                                                            >
+                                                            </v-text-field>
+                                                        </div>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-radio-group>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <v-row
+                                    class="d-flex justify-center ga-4 ma-0 mt-4"
                                 >
-                                    Clear
-                                </v-btn>
-                            </v-row>
-                        </div>
+                                    <v-btn
+                                        type="submit"
+                                        class="button text-subtitle-1 py-2 px-6"
+                                    >
+                                        Salvar
+                                    </v-btn>
+                                    <v-btn
+                                        @click="resetForm"
+                                        color="#D2E4D6"
+                                        class="button text-subtitle-1 py-2 px-6"
+                                    >
+                                        Limpar
+                                    </v-btn>
+                                </v-row>
+                            </div>
+                        </v-form>
                     </div>
                     <div class="ms-3 my-9">
-                        <p class="bigger-p">Question List</p>
+                        <p class="bigger-p">Lista de Questões</p>
                         <div
                             v-for="(question, index) in quizzes[currentQuiz].questions"
                             class="background-light mx-8 my-4 px-3 py-2"
@@ -233,23 +290,25 @@
                             <v-row class="ma-0 justify-space-between">
                                 <div class="d-flex align-center f-12">
                                     <p class="me-2">
-                                        Difficulty: {{ question.difficulty }}
+                                        Dificuldade: {{ question.difficulty }}
                                     </p>
-                                    <p>Category: {{ question.category }}</p>
+                                    <p>Categoria: {{ question.category }}</p>
                                 </div>
                                 <div>
                                     <v-btn
                                         color="#8BC3F8"
                                         rounded="pill"
                                         class="action-button me-3"
-                                        >Editar</v-btn
                                     >
+                                        Editar
+                                    </v-btn>
                                     <v-btn
                                         color="#F39696"
                                         rounded="pill"
                                         class="action-button"
-                                        >Excluir</v-btn
                                     >
+                                        Excluir
+                                    </v-btn>
                                 </div>
                             </v-row>
                         </div>
@@ -280,45 +339,37 @@
                 setup() {
                     const quizzes = ref([
                         {
-                            name: "Nuxt 3 Basics",
-                            description:
-                                "Test your knowledge of the basics of Nuxt 3.",
-                            congratulations:
-                                "Congratulations! You have successfully completed the Nuxt 3 Basics quiz.",
-                            failed: "You have failed the Nuxt 3 Basics quiz. Please try again.",
+                            name: "Loading...",
+                            description: "Loading description",
+                            congratulations: "...",
+                            failed: "...",
                             difficulty: 2,
                             questions: [
                                 {
-                                    question:
-                                        "What is the purpose of the 'pages' directory in Nuxt 3?",
-                                    options: [
-                                        "To store static assets",
-                                        "To define API routes",
-                                        "To create file-based routing",
-                                        "To store global components",
-                                    ],
+                                    question: "Loading...",
+                                    options: ["...", "...", "...", "..."],
                                     correctAnswer: 2,
-                                    explanation:
-                                        "In Nuxt 3, the 'pages' directory is used for file-based routing. Each Vue file in this directory automatically becomes a route in your application.",
+                                    explanation: "...",
                                     category: "Routing",
                                     difficulty: 2,
                                 },
                             ],
                         },
                     ]);
-                    const selectionQuizzes = ref([]);
+                    const selectionQuizzes = ref([
+                        { title: "Loading...", value: 0 },
+                    ]);
                     const currentQuiz = ref(0);
                     const currentQuestion = reactive({
                         question: "",
                         options: ["", "", "", ""],
-                        correctAnswer: null,
+                        correctAnswer: -1,
                         explanation: "",
                         category: "",
-                        difficulty: 3,
+                        difficulty: 2,
                     });
                     const isEditing = ref(false);
                     const loading = ref(true);
-                    let editingIndex = -1;
                     const iconDifficulty = [
                         {
                             icon: "mdi-emoticon-excited",
@@ -341,7 +392,14 @@
                             color: "#FF6868",
                         },
                     ];
+                    const rules = [
+                        (value) => {
+                            if (value) return true;
 
+                            return "You must enter a first name.";
+                        },
+                    ];
+                    let editingIndex = -1;
                     const uniqueCategories = computed(() => {
                         return [
                             ...new Set(
@@ -484,14 +542,16 @@
                     }
 
                     function resetForm() {
+                        console.log(currentQuestion);
                         Object.assign(currentQuestion, {
                             question: "",
                             options: ["", "", "", ""],
-                            correctAnswer: null,
+                            correctAnswer: -1,
                             explanation: "",
                             category: "",
                             difficulty: 3,
                         });
+                        console.log(currentQuestion);
                         isEditing.value = false;
                         editingIndex = -1;
                     }
@@ -533,6 +593,7 @@
                         currentQuiz,
                         currentQuestion,
                         isEditing,
+                        loading,
                         iconDifficulty,
                         uniqueCategories,
                         selectQuiz,

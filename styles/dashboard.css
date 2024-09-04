@@ -58,6 +58,22 @@
 	margin-bottom: 12px;
 }
 
+.emoji {
+	cursor: pointer;
+}
+
+.emoji * {
+	transition: 250ms;
+}
+
+.emoji:not(.active) *:hover {
+	filter: saturate(0.5);
+}
+
+.emoji:not(.active) :not(*:hover) {
+	color: white !important;
+}
+
 .option {
 	min-width: 300px;
 }
