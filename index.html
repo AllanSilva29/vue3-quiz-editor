@@ -20,7 +20,7 @@
 					<div
 						class="d-sm-flex align-center w-100 justify-end mt-12 mx-4">
 						<p class="w-75 bigger-p pe-sm-4">
-							Select which quiz to answer
+							Selecionar o quiz
 						</p>
 						<v-select
 							v-model="selectedQuiz"
@@ -40,7 +40,7 @@
 							<div class="box-wrapper">
 								<div class="box-header">
 									<p class="font-weight-medium">
-										Description
+										Descrição
 									</p>
 								</div>
 								<div class="box-content">
@@ -55,7 +55,7 @@
 						<v-col xs="12" md="3">
 							<div class="box-wrapper">
 								<div class="box-header">
-									<p class="font-weight-medium">Difficulty</p>
+									<p class="font-weight-medium">Dificuldade</p>
 								</div>
 								<div class="box-content emoji">
 									<div
@@ -78,7 +78,7 @@
 							rounded="lg"
 							class="button mx-auto text-subtitle-1 py-2 px-6 mb-6"
 							@click="quizStarted = true;">
-							Start
+							Iniciar
 						</v-btn>
 					</v-row>
 				</div>
@@ -95,14 +95,14 @@
 						<v-row
 							class="d-flex justify-space-between mx-1 mb-13 font-weight-light">
 							<span>
-								Question {{ currentQuestionIndex + 1 }} of {{
+								Questão {{ currentQuestionIndex + 1 }} de {{
 								quizzes[selectedQuiz].questions.length }}
 							</span>
 							<span>
-								Category: {{ currentQuestion.category }}
+								Categoria: {{ currentQuestion.category }}
 							</span>
 							<div class="d-flex">
-								<span>Difficulty:</span>
+								<span>Dificuldade:</span>
 								<div
 									class="ms-2 icon-wrapper emoji"
 									style="--size: 18px">
@@ -144,7 +144,7 @@
 							class="d-flex flex-column background-surface rounded-lg mt-4 py-13"
 							class="explanation">
 							<h2 class="text-center font-weight-medium mb-13">
-								Explanation
+								Explicação
 							</h2>
 							<p class="px-13">
 								{{ currentQuestion.explanation }}
@@ -163,10 +163,10 @@
 					</div>
 					<div v-if="quizCompleted">
 						<h2 class="text-center completed-title">
-							Quiz Completed!
+							Quiz Completo!
 						</h2>
 						<p class="text-center font-weight-medium">
-							Final Score: {{ score }} / {{
+							Pontuação final: {{ score }} / {{
 							quizzes[selectedQuiz].questions.length }}
 						</p>
 						<div
@@ -185,7 +185,7 @@
 								rounded="lg"
 								class="button mx-auto text-subtitle-1 py-2 px-6 mb-6"
 								@click="restartQuiz">
-								Home
+								Voltar
 							</v-btn>
 						</v-row>
 					</div>

@@ -19,11 +19,11 @@
 				<v-row class="my-3 mx-1">
 					<v-row class="nav">
 						<v-col class="d-flex w-100 align-center justify-center">
-							<a href="quiz-editor.html">Quiz Editor</a>
+							<a href="quiz-editor.html">Editor de Quiz</a>
 						</v-col>
 						<v-col
 							class="tab-selected d-flex w-100 align-center justify-center">
-							<a href="#">View Quizzes</a>
+							<a href="#">Ver Quizzes</a>
 						</v-col>
 					</v-row>
 					<v-btn
@@ -37,7 +37,7 @@
 					<div
 						class="d-sm-flex align-center w-100 justify-end mt-12 mb-9">
 						<p class="w-75 bigger-p pe-sm-4">
-							Select which quiz to view questions
+							Selecione o quiz para visualizá-lo
 						</p>
 						<v-select
 							v-model="currentQuiz"
@@ -53,10 +53,10 @@
 					</div>
 					<div v-if="!loading">
 						<div class="mb-9">
-							<p class="bigger-p">About Quiz</p>
+							<p class="bigger-p">Sobre</p>
 							<v-row class="ma-0 py-3 px-4 justify-center">
 								<v-col class="card mx-4">
-									<p class="header">Description</p>
+									<p class="header">Descrição</p>
 									<p>
 										{{ quizzes[currentQuiz].description }}
 									</p>
@@ -65,7 +65,7 @@
 									<v-row class="ma-0 mb-4 w-100">
 										<div class="card">
 											<p class="header">
-												Congratulations Message
+												Mensagem aprovado
 											</p>
 											<p class="text-center">
 												{{
@@ -76,7 +76,7 @@
 									</v-row>
 									<v-row class="ma-0 mt-4 w-100">
 										<div class="card">
-											<p class="header">Failed Message</p>
+											<p class="header">Mensagem reprovado</p>
 											<p class="text-center">
 												{{ quizzes[currentQuiz].failed
 												}}
@@ -87,7 +87,7 @@
 							</v-row>
 						</div>
 						<div>
-							<p class="bigger-p">Question List</p>
+							<p class="bigger-p">Lista de Questões</p>
 							<v-row
 								v-for="(question, index) in quizzes[currentQuiz].questions"
 								class="ma-0 py-3 px-8 justify-center">
@@ -111,7 +111,7 @@
 										</v-row>
 										<div class="mt-6 explanation">
 											<p class="font-weigth-medium f-16">
-												Explanation:
+												Explicação:
 											</p>
 											<p class="ma-6">
 												{{ question.explanation }}
@@ -121,11 +121,11 @@
 									<v-row class="ma-0 justify-space-between">
 										<div class="d-flex align-center f-12">
 											<p class="me-2">
-												Difficulty: {{
+												Dificuldade: {{
 												question.difficulty }}
 											</p>
 											<p>
-												Category: {{ question.category
+												Categoria: {{ question.category
 												}}
 											</p>
 										</div>
