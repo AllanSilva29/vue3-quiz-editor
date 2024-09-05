@@ -1,615 +1,594 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Nuxt 3 Learning Game - Quiz Editor</title>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.js"></script>
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.css"
-        />
-        <link rel="stylesheet" href="../styles/dashboard.css" />
-    </head>
-    <body>
-        <div id="app" class="d-flex align-center justify-center">
-            <v-sheet
-                max-width="1200"
-                class="mx-4 my-2 px-3 pb-7 w-100 rounded-xl"
-            >
-                <v-row class="my-3 mx-1">
-                    <v-row class="nav">
-                        <v-col
-                            class="tab-selected d-flex w-100 align-center justify-center"
-                        >
-                            <a href="#">Editor de Quiz</a>
-                        </v-col>
-                        <v-col class="d-flex w-100 align-center justify-center">
-                            <a href="view-all-quizzes.html">Ver Quizzes</a>
-                        </v-col>
-                    </v-row>
-                    <v-btn
-                        icon="mdi-logout"
-                        @click="sair"
-                        variant="plain"
-                        class="ma-0 ms-7"
-                    >
-                    </v-btn>
-                </v-row>
-                <div class="mx-12 mt-8">
-                    <v-row class="ma-0">
-                        <v-col>
-                            <p class="bigger-p mb-3">
-                                Selecionar o quiz a ser modificado
-                            </p>
-                            <v-select
-                                v-model="currentQuiz"
-                                label=""
-                                class="w-100 rounded-lg"
-                                variant="outlined"
-                                color="black"
-                                hide-details
-                                :items="selectionQuizzes"
-                                :loading="loading"
-                                :disabled="loading"
-                            >
-                            </v-select>
-                        </v-col>
-                        <v-col class="d-flex align-center">
-                            <v-row class="ma-0 d-flex justify-end align-center">
-                                <v-btn
-                                    color="#8BF890"
-                                    height="auto"
-                                    @click="createNewQuiz('')"
-                                    :disabled="loading"
-                                    class="py-5 px-0 ma-0"
-                                >
-                                    <v-icon size="20" icon="mdi-plus"></v-icon>
-                                </v-btn>
-                                <v-btn
-                                    color="#8BC4F8"
-                                    height="auto"
-                                    :disabled="loading"
-                                    class="py-5 px-0 ma-0 mx-4"
-                                >
-                                    <v-icon
-                                        size="20"
-                                        icon="mdi-pencil"
-                                    ></v-icon>
-                                </v-btn>
-                                <v-btn
-                                    color="#F39696"
-                                    height="auto"
-                                    @click="deleteQuiz"
-                                    :disabled="loading"
-                                    class="py-5 px-0 ma-0"
-                                >
-                                    <v-icon
-                                        size="20"
-                                        icon="mdi-trash-can"
-                                    ></v-icon>
-                                </v-btn>
-                            </v-row>
-                        </v-col>
-                    </v-row>
-                    <v-col class="ma-0 my-7">
-                        <v-row class="ma-0 mb-2">
-                            <p class="bigger-p">Estatisticas</p>
-                        </v-row>
-                        <v-row
-                            class="ma-0 mx-10 justify-center font-weight-medium"
-                        >
-                            <v-col>
-                                <p v-if="loading" class="text-center">XX</p>
-                                <p v-else class="text-center">
-                                    {{ quizzes[currentQuiz].questions.length }}
-                                </p>
-                                <p class="text-center f-12">Quant. perguntas</p>
-                            </v-col>
-                            <v-col>
-                                <p v-if="loading" class="text-center">XX</p>
-                                <p v-else class="text-center">
-                                    {{ quizzes[currentQuiz].difficulty }}
-                                </p>
-                                <p class="text-center f-12">
-                                    Dificuldade média
-                                </p>
-                            </v-col>
-                            <v-col>
-                                <p v-if="loading" class="text-center">XX</p>
-                                <p v-else class="text-center">
-                                    {{ uniqueCategories.length}}
-                                </p>
-                                <p class="text-center f-12">
-                                    Quant. categorias
-                                </p>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <div class="ms-3">
-                        <v-form>
-                            <p class="bigger-p">Adicionar Pergunta</p>
-                            <div class="ms-7 mx-0 mt-2">
-                                <v-row class="ma-0">
-                                    <v-col class="ps-0">
-                                        <p class="mb-1">Enunciado</p>
-                                        <v-textarea
-                                            v-model="currentQuestion.question"
-                                        >
-                                        </v-textarea>
-                                    </v-col>
-                                    <v-col class="pe-0">
-                                        <p class="mb-1">Categoria</p>
-                                        <v-text-field
-                                            type="text"
-                                            v-model="currentQuestion.category"
-                                            class="mb-4"
-                                        >
-                                        </v-text-field>
-                                        <p class="mb-1">Dificuldade</p>
-                                        <div class="d-flex mx-16 px-4 mt-1">
-                                            <div
-                                                v-for="(item, index) in iconDifficulty"
-                                                :key="index"
-                                                class="icon-wrapper emoji mx-auto"
-                                                :class="currentQuestion.difficulty == index ? 'active' : ''"
-                                                @click="currentQuestion.difficulty = index"
-                                                style="--size: 25px"
-                                            >
-                                                <v-icon
-                                                    size="23px"
-                                                    :icon="item.icon"
-                                                    :color="item.color"
-                                                >
-                                                </v-icon>
-                                            </div>
-                                        </div>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="ma-0">
-                                    <v-col class="px-0">
-                                        <p class="mb-1">Explicação</p>
-                                        <v-textarea
-                                            v-model="currentQuestion.explanation"
-                                        >
-                                        </v-textarea>
-                                    </v-col>
-                                </v-row>
-                                <v-row class="ma-0">
-                                    <v-col class="px-0">
-                                        <p class="mb-1">Alternativas</p>
-                                        <div class="d-flex mx-4">
-                                            <v-radio-group
-                                                v-model="currentQuestion.correctAnswer"
-                                            >
-                                                <v-row class="ma-0">
-                                                    <v-col>
-                                                        <div
-                                                            class="d-flex ga-2 mb-2"
-                                                        >
-                                                            <v-radio
-                                                                inline
-                                                                value="0"
-                                                            ></v-radio>
-                                                            <v-text-field
-                                                                type="text"
-                                                                placeholder="Opção 1"
-                                                                variant="outlined"
-                                                                hide-details
-                                                                v-model="currentQuestion.options[0]"
-                                                            >
-                                                            </v-text-field>
-                                                        </div>
-                                                        <div
-                                                            class="d-flex ga-2"
-                                                        >
-                                                            <v-radio
-                                                                inline
-                                                                value="2"
-                                                            >
-                                                            </v-radio>
-                                                            <v-text-field
-                                                                type="text"
-                                                                placeholder="Opção 3"
-                                                                variant="outlined"
-                                                                hide-details
-                                                                v-model="currentQuestion.options[2]"
-                                                            >
-                                                            </v-text-field>
-                                                        </div>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <div
-                                                            class="d-flex ga-2 mb-2"
-                                                        >
-                                                            <v-radio
-                                                                inline
-                                                                value="1"
-                                                            ></v-radio>
-                                                            <v-text-field
-                                                                type="text"
-                                                                placeholder="Opção 2"
-                                                                variant="outlined"
-                                                                hide-details
-                                                                v-model="currentQuestion.options[1]"
-                                                            >
-                                                            </v-text-field>
-                                                        </div>
-                                                        <div
-                                                            class="d-flex ga-2"
-                                                        >
-                                                            <v-radio
-                                                                inline
-                                                                value="3"
-                                                            ></v-radio>
-                                                            <v-text-field
-                                                                type="text"
-                                                                placeholder="Opção 4"
-                                                                variant="outlined"
-                                                                hide-details
-                                                                v-model="currentQuestion.options[3]"
-                                                            >
-                                                            </v-text-field>
-                                                        </div>
-                                                    </v-col>
-                                                </v-row>
-                                            </v-radio-group>
-                                        </div>
-                                    </v-col>
-                                </v-row>
-                                <v-row
-                                    class="d-flex justify-center ga-4 ma-0 mt-4"
-                                >
-                                    <v-btn
-                                        type="submit"
-                                        class="button text-subtitle-1 py-2 px-6"
-                                    >
-                                        Salvar
-                                    </v-btn>
-                                    <v-btn
-                                        @click="resetForm"
-                                        color="#D2E4D6"
-                                        class="button text-subtitle-1 py-2 px-6"
-                                    >
-                                        Limpar
-                                    </v-btn>
-                                </v-row>
-                            </div>
-                        </v-form>
-                    </div>
-                    <div class="ms-3 my-9">
-                        <p class="bigger-p">Lista de Questões</p>
-                        <div
-                            v-for="(question, index) in quizzes[currentQuiz].questions"
-                            class="background-light mx-8 my-4 px-3 py-2"
-                        >
-                            <p class="mb-7">
-                                {{ index + 1 }}) {{ question.question }}
-                            </p>
-                            <v-row class="ma-0 justify-space-between">
-                                <div class="d-flex align-center f-12">
-                                    <p class="me-2">
-                                        Dificuldade: {{ question.difficulty }}
-                                    </p>
-                                    <p>Categoria: {{ question.category }}</p>
-                                </div>
-                                <div>
-                                    <v-btn
-                                        color="#8BC3F8"
-                                        rounded="pill"
-                                        class="action-button me-3"
-                                    >
-                                        Editar
-                                    </v-btn>
-                                    <v-btn
-                                        color="#F39696"
-                                        rounded="pill"
-                                        class="action-button"
-                                    >
-                                        Excluir
-                                    </v-btn>
-                                </div>
-                            </v-row>
-                        </div>
-                    </div>
-                </div>
-            </v-sheet>
-        </div>
+	<head>
+		<title>Nuxt 3 Learning Game - Quiz Editor</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.js"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.css" />
+		<link rel="stylesheet" href="../styles/dashboard.css" />
+	</head>
+	<body>
+		<div id="app" class="d-flex align-center justify-center">
+			<v-sheet
+				max-width="1200"
+				class="mx-4 my-2 px-3 pb-7 w-100 rounded-xl">
+				<v-row class="my-3 mx-1">
+					<v-row class="nav">
+						<v-col
+							class="tab-selected d-flex w-100 align-center justify-center">
+							<a href="#">Editor de Quiz</a>
+						</v-col>
+						<v-col class="d-flex w-100 align-center justify-center">
+							<a href="view-all-quizzes.html">Ver Quizzes</a>
+						</v-col>
+					</v-row>
+					<v-btn
+						icon="mdi-logout"
+						@click="sair"
+						variant="plain"
+						class="ma-0 ms-7">
+					</v-btn>
+				</v-row>
+				<div class="mx-12 mt-8">
+					<v-row class="ma-0">
+						<v-col>
+							<p class="bigger-p mb-3">
+								Selecionar o quiz a ser modificado
+							</p>
+							<v-select
+								v-model="currentQuiz"
+								label=""
+								class="w-100 rounded-lg"
+								variant="outlined"
+								color="black"
+								hide-details
+								:items="selectionQuizzes"
+								:loading="loading"
+								:disabled="loading">
+							</v-select>
+						</v-col>
+						<v-col class="d-flex align-center">
+							<v-row class="ma-0 d-flex justify-end align-center">
+								<v-btn
+									color="#8BF890"
+									height="auto"
+									@click="createNewQuiz('')"
+									:disabled="loading"
+									class="py-5 px-0 ma-0">
+									<v-icon size="20" icon="mdi-plus"></v-icon>
+								</v-btn>
+								<v-btn
+									color="#8BC4F8"
+									height="auto"
+									:disabled="loading"
+									class="py-5 px-0 ma-0 mx-4">
+									<v-icon
+										size="20"
+										icon="mdi-pencil"></v-icon>
+								</v-btn>
+								<v-btn
+									color="#F39696"
+									height="auto"
+									@click="deleteQuiz"
+									:disabled="loading"
+									class="py-5 px-0 ma-0">
+									<v-icon
+										size="20"
+										icon="mdi-trash-can"></v-icon>
+								</v-btn>
+							</v-row>
+						</v-col>
+					</v-row>
+					<v-col class="ma-0 my-7">
+						<v-row class="ma-0 mb-2">
+							<p class="bigger-p">Estatisticas</p>
+						</v-row>
+						<v-row
+							class="ma-0 mx-10 justify-center font-weight-medium">
+							<v-col>
+								<p v-if="loading" class="text-center">XX</p>
+								<p v-else class="text-center">
+									{{ quizzes[currentQuiz].questions.length }}
+								</p>
+								<p class="text-center f-12">Quant. perguntas</p>
+							</v-col>
+							<v-col>
+								<p v-if="loading" class="text-center">XX</p>
+								<p v-else class="text-center">
+									{{ quizzes[currentQuiz].difficulty }}
+								</p>
+								<p class="text-center f-12">
+									Dificuldade média
+								</p>
+							</v-col>
+							<v-col>
+								<p v-if="loading" class="text-center">XX</p>
+								<p v-else class="text-center">
+									{{ uniqueCategories.length}}
+								</p>
+								<p class="text-center f-12">
+									Quant. categorias
+								</p>
+							</v-col>
+						</v-row>
+					</v-col>
+					<div class="ms-3">
+						<v-form v-model="valid" fast-fail @submit.prevent>
+							<p class="bigger-p">Adicionar Pergunta</p>
+							<div class="ms-7 mx-0 mt-2">
+								<v-row class="ma-0">
+									<v-col class="ps-0">
+										<p class="mb-1">Enunciado*</p>
+										<v-textarea
+											:rules="rules.question"
+											v-model="currentQuestion.question">
+										</v-textarea>
+									</v-col>
+									<v-col class="pe-0">
+										<p class="mb-1">Categoria*</p>
+										<v-text-field
+											type="text"
+											:rules="rules.category"
+											v-model="currentQuestion.category"
+											class="mb-4">
+										</v-text-field>
+										<p class="mb-1">Dificuldade*</p>
+										<div class="d-flex mx-16 px-4 mt-1">
+											<div
+												v-for="(item, index) in iconDifficulty"
+												:key="index"
+												class="icon-wrapper emoji mx-auto"
+												:class="currentQuestion.difficulty == index ? 'active' : ''"
+												@click="currentQuestion.difficulty = index"
+												style="--size: 15px">
+												<v-icon
+													size="23px"
+													:icon="item.icon"
+													:color="item.color">
+												</v-icon>
+											</div>
+										</div>
+									</v-col>
+								</v-row>
+								<v-row class="ma-0">
+									<v-col class="px-0">
+										<p class="mb-1">Explicação*</p>
+										<v-textarea
+											:rules="rules.explanation"
+											v-model="currentQuestion.explanation">
+										</v-textarea>
+									</v-col>
+								</v-row>
+								<v-row class="ma-0">
+									<v-col class="px-0">
+										<p class="mb-1">Alternativas</p>
+										<div class="d-flex mx-4">
+											<v-radio-group
+												v-model="currentQuestion.correctAnswer">
+												<v-row class="ma-0">
+													<v-col>
+														<div
+															class="d-flex ga-2 mb-2">
+															<v-radio
+																inline
+																value="0"></v-radio>
+															<v-text-field
+																type="text"
+																placeholder="Opção 1*"
+																variant="outlined"
+																hide-details
+																:rules="rules.option"
+																v-model="currentQuestion.options[0]">
+															</v-text-field>
+														</div>
+														<div
+															class="d-flex ga-2">
+															<v-radio
+																inline
+																value="2">
+															</v-radio>
+															<v-text-field
+																type="text"
+																placeholder="Opção 3"
+																variant="outlined"
+																hide-details
+																v-model="currentQuestion.options[2]">
+															</v-text-field>
+														</div>
+													</v-col>
+													<v-col>
+														<div
+															class="d-flex ga-2 mb-2">
+															<v-radio
+																inline
+																value="1"></v-radio>
+															<v-text-field
+																type="text"
+																placeholder="Opção 2*"
+																variant="outlined"
+																hide-details
+																:rules="rules.option"
+																v-model="currentQuestion.options[1]">
+															</v-text-field>
+														</div>
+														<div
+															class="d-flex ga-2">
+															<v-radio
+																inline
+																value="3"></v-radio>
+															<v-text-field
+																type="text"
+																placeholder="Opção 4"
+																variant="outlined"
+																hide-details
+																v-model="currentQuestion.options[3]">
+															</v-text-field>
+														</div>
+													</v-col>
+												</v-row>
+											</v-radio-group>
+										</div>
+									</v-col>
+								</v-row>
+								<v-row
+									class="d-flex justify-center ga-4 ma-0 mt-4">
+									<v-btn
+										type="submit"
+										@click="saveQuestion()"
+										class="button text-subtitle-1 py-2 px-6">
+										Salvar
+									</v-btn>
+									<v-btn
+										@click="resetForm"
+										color="#D2E4D6"
+										class="button text-subtitle-1 py-2 px-6">
+										Limpar
+									</v-btn>
+								</v-row>
+							</div>
+						</v-form>
+					</div>
+					<div class="ms-3 my-9">
+						<p class="bigger-p">Lista de Questões</p>
+						<div
+							v-for="(question, index) in quizzes[currentQuiz].questions"
+							:key="index"
+							class="background-light mx-8 my-4 px-3 py-2">
+							<p class="mb-7">
+								{{ index + 1 }}) {{ question.question }}
+							</p>
+							<v-row class="ma-0 justify-space-between">
+								<div class="d-flex align-center f-12">
+									<p class="me-2">
+										Dificuldade: {{ question.difficulty }}
+									</p>
+									<p>Categoria: {{ question.category }}</p>
+								</div>
+								<div>
+									<v-btn
+										color="#8BC3F8"
+										rounded="pill"
+										class="action-button me-3">
+										Editar
+									</v-btn>
+									<v-btn
+										color="#F39696"
+										rounded="pill"
+										class="action-button"
+										@click="deleteQuestion('index')">
+										Excluir
+									</v-btn>
+								</div>
+							</v-row>
+						</div>
+					</div>
+				</div>
+			</v-sheet>
+		</div>
 
-        <script type="module">
-            import {
-                getQuizzes,
-                insertQuizzes,
-                logado,
-                deslogar,
-            } from "../firebase.js";
-            const {
-                createApp,
-                ref,
-                reactive,
-                computed,
-                onMounted,
-                onBeforeMount,
-            } = Vue;
-            const { createVuetify } = Vuetify;
-            const vuetify = createVuetify();
+		<script type="module">
+			import {
+				getQuizzes,
+				insertQuizzes,
+				logado,
+				deslogar,
+			} from "../firebase.js";
+			const {
+				createApp,
+				ref,
+				reactive,
+				computed,
+				onMounted,
+				onBeforeMount,
+			} = Vue;
+			const {createVuetify} = Vuetify;
+			const vuetify = createVuetify();
 
-            createApp({
-                setup() {
-                    const quizzes = ref([
-                        {
-                            name: "Loading...",
-                            description: "Loading description",
-                            congratulations: "...",
-                            failed: "...",
-                            difficulty: 2,
-                            questions: [
-                                {
-                                    question: "Loading...",
-                                    options: ["...", "...", "...", "..."],
-                                    correctAnswer: 2,
-                                    explanation: "...",
-                                    category: "Routing",
-                                    difficulty: 2,
-                                },
-                            ],
-                        },
-                    ]);
-                    const selectionQuizzes = ref([
-                        { title: "Loading...", value: 0 },
-                    ]);
-                    const currentQuiz = ref(0);
-                    const currentQuestion = reactive({
-                        question: "",
-                        options: ["", "", "", ""],
-                        correctAnswer: -1,
-                        explanation: "",
-                        category: "",
-                        difficulty: 2,
-                    });
-                    const isEditing = ref(false);
-                    const loading = ref(true);
-                    const iconDifficulty = [
-                        {
-                            icon: "mdi-emoticon-excited",
-                            color: "#68FF77",
-                        },
-                        {
-                            icon: "mdi-emoticon-happy",
-                            color: "#C6FF68",
-                        },
-                        {
-                            icon: "mdi-emoticon-neutral",
-                            color: "#FFF968",
-                        },
-                        {
-                            icon: "mdi-emoticon-sad",
-                            color: "#FFC368",
-                        },
-                        {
-                            icon: "mdi-emoticon-dead",
-                            color: "#FF6868",
-                        },
-                    ];
-                    const rules = [
-                        (value) => {
-                            if (value) return true;
+			createApp({
+				setup() {
+					const quizzes = ref([
+						{
+							name: "Loading...",
+							description: "Loading description",
+							congratulations: "...",
+							failed: "...",
+							difficulty: 2,
+							questions: [
+								{
+									question: "Loading...",
+									options: ["...", "...", "...", "..."],
+									correctAnswer: 2,
+									explanation: "...",
+									category: "Routing",
+									difficulty: 2,
+								},
+							],
+						},
+					]);
+					const selectionQuizzes = ref([
+						{title: "Loading...", value: 0},
+					]);
+					const currentQuiz = ref(0);
+					const currentQuestion = reactive({
+						question: "",
+						options: ["", "", "", ""],
+						correctAnswer: -1,
+						explanation: "",
+						category: "",
+						difficulty: 2,
+					});
+					const isEditing = ref(false);
+					const loading = ref(true);
+					const iconDifficulty = [
+						{
+							icon: "mdi-emoticon-excited",
+							color: "#68FF77",
+						},
+						{
+							icon: "mdi-emoticon-happy",
+							color: "#C6FF68",
+						},
+						{
+							icon: "mdi-emoticon-neutral",
+							color: "#FFF968",
+						},
+						{
+							icon: "mdi-emoticon-sad",
+							color: "#FFC368",
+						},
+						{
+							icon: "mdi-emoticon-dead",
+							color: "#FF6868",
+						},
+					];
+					const valid = ref(false);
+					const rules = {
+						question: [(v) => !!v || "Enunciado é obrigatório"],
+						category: [(v) => !!v || "Categoria é obrigatório"],
+						difficulty: [(v) => !!v || "Dificuldade é obrigatório"],
+						explanation: [(v) => !!v || "Explicação é obrigatório"],
+						option: [(v) => !!v || "Alternativa é obrigatória"],
+					};
+					let editingIndex = -1;
+					const uniqueCategories = computed(() => {
+						return [
+							...new Set(
+								quizzes.value[currentQuiz.value].questions.map(
+									(q) => q.category
+								)
+							),
+						];
+					});
 
-                            return "You must enter a first name.";
-                        },
-                    ];
-                    let editingIndex = -1;
-                    const uniqueCategories = computed(() => {
-                        return [
-                            ...new Set(
-                                quizzes.value[currentQuiz.value].questions.map(
-                                    (q) => q.category
-                                )
-                            ),
-                        ];
-                    });
+					function generateAverageDifficulty() {
+						if (
+							quizzes.value[currentQuiz.value].questions
+								.length === 0
+						) {
+							quizzes.value[currentQuiz.value].difficulty = 0;
+							return;
+						}
 
-                    function generateAverageDifficulty() {
-                        if (
-                            quizzes.value[currentQuiz.value].questions
-                                .length === 0
-                        ) {
-                            quizzes.value[currentQuiz.value].difficulty = 0;
-                            return;
-                        }
+						const sum = quizzes.value[
+							currentQuiz.value
+						].questions.reduce((acc, q) => acc + q.difficulty, 0);
 
-                        const sum = quizzes.value[
-                            currentQuiz.value
-                        ].questions.reduce((acc, q) => acc + q.difficulty, 0);
+						quizzes.value[currentQuiz.value].difficulty = (
+							sum /
+							quizzes.value[currentQuiz.value].questions.length
+						).toFixed(0);
+					}
 
-                        quizzes.value[currentQuiz.value].difficulty = (
-                            sum /
-                            quizzes.value[currentQuiz.value].questions.length
-                        ).toFixed(0);
-                    }
+					onBeforeMount(() => {
+						logado().then((user) => {
+							if (user === null) {
+								window.location.href = "../login.html";
+							}
+						});
+					});
 
-                    onBeforeMount(() => {
-                        logado().then((user) => {
-                            if (user === null) {
-                                window.location.href = "../login.html";
-                            }
-                        });
-                    });
+					onMounted(() => {
+						getQuizzes().then((quizzesData) => {
+							loading.value = false;
+							if (quizzesData) {
+								quizzes.value = [...quizzesData];
 
-                    onMounted(() => {
-                        getQuizzes().then((quizzesData) => {
-                            loading.value = false;
-                            if (quizzesData) {
-                                quizzes.value = [...quizzesData];
+								selectionQuizzes.value = [];
+								for (let i = 0; i < quizzes.value.length; i++) {
+									selectionQuizzes.value.push({
+										title: quizzes.value[i].name,
+										value: i,
+									});
+								}
 
-                                selectionQuizzes.value = [];
-                                for (let i = 0; i < quizzes.value.length; i++) {
-                                    selectionQuizzes.value.push({
-                                        title: quizzes.value[i].name,
-                                        value: i,
-                                    });
-                                }
+								console.log("Quizzes carregados");
+							}
+						});
+					});
 
-                                console.log("Quizzes carregados");
-                            }
-                        });
-                    });
+					function selectQuiz() {
+						currentQuiz.value =
+							document.getElementById("quiz-dropdown").value;
+					}
 
-                    function selectQuiz() {
-                        currentQuiz.value =
-                            document.getElementById("quiz-dropdown").value;
-                    }
+					function createNewQuiz(textPrompt) {
+						textPrompt =
+							textPrompt || "Digite o nome do novo quiz:";
+						let quizName = prompt(textPrompt);
+						if (quizName) {
+							quizzes.value.push({
+								name: quizName,
+								questions: [],
+							});
+							insertQuizzes(quizzes.value);
 
-                    function createNewQuiz(textPrompt) {
-                        textPrompt =
-                            textPrompt || "Digite o nome do novo quiz:";
-                        let quizName = prompt(textPrompt);
-                        if (quizName) {
-                            quizzes.value.push({
-                                name: quizName,
-                                questions: [],
-                            });
-                            insertQuizzes(quizzes.value);
+							currentQuiz.value = quizzes.value.length - 1;
+							generateAverageDifficulty();
 
-                            currentQuiz.value = quizzes.value.length - 1;
-                            generateAverageDifficulty();
+							alert("Quiz criado com sucesso!");
+						}
+					}
 
-                            alert("Quiz criado com sucesso!");
-                        }
-                    }
+					function editQuiz() {
+						let name = document.getElementById("quiz-name").value;
+						let description =
+							document.getElementById("quiz-description").value;
+						let congratulations = document.getElementById(
+							"quiz-congratulations"
+						).value;
+						let failed =
+							document.getElementById("quiz-failed").value;
+						quizzes.value[currentQuiz.value].name = name;
+						quizzes.value[currentQuiz.value].description =
+							description;
+						quizzes.value[currentQuiz.value].congratulations =
+							congratulations;
+						quizzes.value[currentQuiz.value].failed = failed;
+						alert("Quiz salvo com sucesso!");
+						insertQuizzes(quizzes.value);
+					}
 
-                    function editQuiz() {
-                        let name = document.getElementById("quiz-name").value;
-                        let description =
-                            document.getElementById("quiz-description").value;
-                        let congratulations = document.getElementById(
-                            "quiz-congratulations"
-                        ).value;
-                        let failed =
-                            document.getElementById("quiz-failed").value;
-                        quizzes.value[currentQuiz.value].name = name;
-                        quizzes.value[currentQuiz.value].description =
-                            description;
-                        quizzes.value[currentQuiz.value].congratulations =
-                            congratulations;
-                        quizzes.value[currentQuiz.value].failed = failed;
-                        alert("Quiz salvo com sucesso!");
-                        insertQuizzes(quizzes.value);
-                    }
+					function deleteQuiz() {
+						if (
+							confirm(
+								"Tem certeza que quer deletar o quiz (" +
+									quizzes.value[currentQuiz.value].name +
+									")?"
+							)
+						) {
+							quizzes.value.splice(currentQuiz.value, 1);
+							currentQuiz.value = 0;
+							if (quizzes.value.length === 0) {
+								createNewQuiz(
+									"Você precisa ter pelo menos um quiz salvo, por favor digite o nome do novo quiz:"
+								);
+							} else {
+								insertQuizzes(quizzes.value);
+								alert(
+									`Quiz ${
+										quizzes.value[currentQuiz.value].name
+									} deletado com sucesso.`
+								);
+							}
+						}
+					}
 
-                    function deleteQuiz() {
-                        if (
-                            confirm(
-                                "Tem certeza que quer deletar o quiz (" +
-                                    quizzes.value[currentQuiz.value].name +
-                                    ")?"
-                            )
-                        ) {
-                            quizzes.value.splice(currentQuiz.value, 1);
-                            currentQuiz.value = 0;
-                            if (quizzes.value.length === 0) {
-                                createNewQuiz(
-                                    "Você precisa ter pelo menos um quiz salvo, por favor digite o nome do novo quiz:"
-                                );
-                            } else {
-                                insertQuizzes(quizzes.value);
-                                alert(
-                                    `Quiz ${
-                                        quizzes.value[currentQuiz.value].name
-                                    } deletado com sucesso.`
-                                );
-                            }
-                        }
-                    }
+					function saveQuestion() {
+						if (!valid.value) return;
 
-                    function saveQuestion() {
-                        const newQuestion = { ...currentQuestion };
-                        if (isEditing.value) {
-                            quizzes.value[currentQuiz.value].questions[
-                                editingIndex
-                            ] = newQuestion;
-                            isEditing.value = false;
-                            editingIndex = -1;
-                        } else {
-                            quizzes.value[currentQuiz.value].questions.push(
-                                newQuestion
-                            );
-                        }
-                        resetForm();
-                        generateAverageDifficulty();
-                        insertQuizzes(quizzes.value);
-                    }
+						const newQuestion = {...currentQuestion};
+						if (isEditing.value) {
+							quizzes.value[currentQuiz.value].questions[
+								editingIndex
+							] = newQuestion;
+							isEditing.value = false;
+							editingIndex = -1;
+						} else {
+							quizzes.value[currentQuiz.value].questions.push(
+								newQuestion
+							);
+						}
 
-                    function resetForm() {
-                        console.log(currentQuestion);
-                        Object.assign(currentQuestion, {
-                            question: "",
-                            options: ["", "", "", ""],
-                            correctAnswer: -1,
-                            explanation: "",
-                            category: "",
-                            difficulty: 3,
-                        });
-                        console.log(currentQuestion);
-                        isEditing.value = false;
-                        editingIndex = -1;
-                    }
+						resetForm();
+						generateAverageDifficulty();
+						insertQuizzes(quizzes.value);
+					}
 
-                    function editQuestion(index) {
-                        Object.assign(
-                            currentQuestion,
-                            quizzes.value[currentQuiz.value].questions[index]
-                        );
-                        isEditing.value = true;
-                        editingIndex = index;
-                    }
+					function resetForm() {
+						console.log(currentQuestion);
+						Object.assign(currentQuestion, {
+							question: "",
+							options: ["", "", "", ""],
+							correctAnswer: -1,
+							explanation: "",
+							category: "",
+							difficulty: 3,
+						});
+						console.log(currentQuestion);
+						isEditing.value = false;
+						editingIndex = -1;
+					}
 
-                    function deleteQuestion(index) {
-                        if (
-                            confirm(
-                                "Tem certeza que quer deletar essa questão?"
-                            )
-                        ) {
-                            quizzes.value[currentQuiz.value].questions.splice(
-                                index,
-                                1
-                            );
-                            insertQuizzes(quizzes.value);
-                        }
-                    }
+					function editQuestion(index) {
+						Object.assign(
+							currentQuestion,
+							quizzes.value[currentQuiz.value].questions[index]
+						);
+						isEditing.value = true;
+						editingIndex = index;
+					}
 
-                    function sair() {
-                        deslogar().then((retorno) => {
-                            if (retorno) {
-                                window.location.href = "../login.html";
-                            }
-                        });
-                    }
+					function deleteQuestion(index) {
+						if (
+							confirm(
+								"Tem certeza que quer deletar essa questão?"
+							)
+						) {
+							quizzes.value[currentQuiz.value].questions.splice(
+								index,
+								1
+							);
+							insertQuizzes(quizzes.value);
+						}
+					}
 
-                    return {
-                        quizzes,
-                        selectionQuizzes,
-                        currentQuiz,
-                        currentQuestion,
-                        isEditing,
-                        loading,
-                        iconDifficulty,
-                        uniqueCategories,
-                        selectQuiz,
-                        createNewQuiz,
-                        editQuiz,
-                        deleteQuiz,
-                        saveQuestion,
-                        resetForm,
-                        editQuestion,
-                        deleteQuestion,
-                        sair,
-                    };
-                },
-            })
-                .use(vuetify)
-                .mount("#app");
-        </script>
-    </body>
+					function sair() {
+						deslogar().then((retorno) => {
+							if (retorno) {
+								window.location.href = "../login.html";
+							}
+						});
+					}
+
+					return {
+						quizzes,
+						selectionQuizzes,
+						currentQuiz,
+						currentQuestion,
+						isEditing,
+						loading,
+						valid,
+						rules,
+						iconDifficulty,
+						uniqueCategories,
+						selectQuiz,
+						createNewQuiz,
+						editQuiz,
+						deleteQuiz,
+						saveQuestion,
+						resetForm,
+						editQuestion,
+						deleteQuestion,
+						sair,
+					};
+				},
+			})
+				.use(vuetify)
+				.mount("#app");
+		</script>
+	</body>
 </html>
