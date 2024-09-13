@@ -1,260 +1,278 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>View Quizzes</title>
-		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.js"></script>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.css" />
-		<link rel="stylesheet" href="../styles/dashboard.css" />
-	</head>
-	<body>
-		<div id="app" class="d-flex align-center justify-center">
-			<v-sheet
-				max-width="1200"
-				class="mx-4 my-2 px-3 pb-7 w-100 rounded-xl">
-				<v-row class="my-3 mx-1">
-					<v-row class="nav">
-						<v-col class="d-flex w-100 align-center justify-center">
-							<a href="quiz-editor.html">Editor de Quiz</a>
-						</v-col>
-						<v-col
-							class="tab-selected d-flex w-100 align-center justify-center">
-							<a href="#">Ver Quizzes</a>
-						</v-col>
-					</v-row>
-					<v-btn
-						icon="mdi-logout"
-						@click="sair"
-						variant="plain"
-						class="ma-0 ms-7">
-					</v-btn>
-				</v-row>
-				<div class="px-md-16">
-					<div
-						class="d-sm-flex align-center w-100 justify-end mt-12 mb-9">
-						<p class="w-75 bigger-p pe-sm-4">
-							Selecione o quiz para visualizá-lo
-						</p>
-						<v-select
-							v-model="currentQuiz"
-							label=""
-							class="w-100 rounded-lg"
-							variant="outlined"
-							color="black"
-							hide-details
-							:items="selectionQuizzes"
-							:loading="loading"
-							:disabled="loading">
-						</v-select>
-					</div>
-					<div v-if="!loading">
-						<div class="mb-9">
-							<p class="bigger-p">Sobre</p>
-							<v-row class="ma-0 py-3 px-4 justify-center">
-								<v-col class="card mx-4">
-									<p class="header">Descrição</p>
-									<p>
-										{{ quizzes[currentQuiz].description }}
-									</p>
-								</v-col>
-								<v-col class="pa-0 mx-4">
-									<v-row class="ma-0 mb-4 w-100">
-										<div class="card">
-											<p class="header">
-												Mensagem aprovado
-											</p>
-											<p class="text-center">
-												{{
-												quizzes[currentQuiz].congratulations
-												}}
-											</p>
-										</div>
-									</v-row>
-									<v-row class="ma-0 mt-4 w-100">
-										<div class="card">
-											<p class="header">Mensagem reprovado</p>
-											<p class="text-center">
-												{{ quizzes[currentQuiz].failed
-												}}
-											</p>
-										</div>
-									</v-row>
-								</v-col>
-							</v-row>
-						</div>
-						<div>
-							<p class="bigger-p">Lista de Questões</p>
-							<v-row
-								v-for="(question, index) in quizzes[currentQuiz].questions"
-								class="ma-0 py-3 px-8 justify-center">
-								<div class="card">
-									<p class="mt-2 font-weight-medium">
-										{{ index+1 }}) {{ question.question }}
-									</p>
-									<div class="my-10 mx-8">
-										<v-row
-											justify="center"
-											class="d-flex ga-4 ma-0">
-											<v-col
-												v-for="(option, index) in question.options"
-												:key="index"
-												:class="['option-wrapper pa-0 w-100', option.length > 0 ? 'd-block' : 'd-none']">
-												<div
-													:class="['option', index === question.correctAnswer ? 'correct' : 'incorrect']">
-													{{ option }}
-												</div>
-											</v-col>
-										</v-row>
-										<div class="mt-6 explanation">
-											<p class="font-weigth-medium f-16">
-												Explicação:
-											</p>
-											<p class="ma-6">
-												{{ question.explanation }}
-											</p>
-										</div>
-									</div>
-									<v-row class="ma-0 justify-space-between">
-										<div class="d-flex align-center f-12">
-											<p class="me-2">
-												Dificuldade: {{
-												question.difficulty }}
-											</p>
-											<p>
-												Categoria: {{ question.category
-												}}
-											</p>
-										</div>
-										<div>
-											<v-btn
-												icon="mdi-trash-can"
-												variant="plain"
-												density="compact"
-												color="red"
-												@click="deleteQuestion(currentQuiz, index)"
-												class="delete-btn"></v-btn>
-										</div>
-									</v-row>
-								</div>
-							</v-row>
-						</div>
-					</div>
-				</div>
-			</v-sheet>
-		</div>
+    <head>
+        <title>View Quizzes</title>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.js"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vuetify@3.7.1/dist/vuetify.min.css"
+        />
+        <link rel="stylesheet" href="../styles/dashboard.css" />
+    </head>
+    <body>
+        <div id="app" class="d-flex align-center justify-center">
+            <v-sheet
+                max-width="1200"
+                class="mx-4 my-2 px-3 pb-7 w-100 rounded-xl"
+            >
+                <v-row class="my-3 mx-1">
+                    <v-row class="nav">
+                        <v-col class="d-flex w-100 align-center justify-center">
+                            <a href="quiz-editor.html">Editor de Quiz</a>
+                        </v-col>
+                        <v-col
+                            class="tab-selected d-flex w-100 align-center justify-center"
+                        >
+                            <a href="#">Ver Quizzes</a>
+                        </v-col>
+                    </v-row>
+                    <v-btn
+                        icon="mdi-logout"
+                        @click="sair"
+                        variant="plain"
+                        class="ma-0 ms-7"
+                    >
+                    </v-btn>
+                </v-row>
+                <div class="px-md-16">
+                    <div
+                        class="d-sm-flex align-center w-100 justify-end mt-12 mb-9"
+                    >
+                        <p class="w-75 bigger-p pe-sm-4">
+                            Selecione o quiz para visualizá-lo
+                        </p>
+                        <v-select
+                            v-model="currentQuiz"
+                            label=""
+                            class="w-100 rounded-lg"
+                            variant="outlined"
+                            color="black"
+                            hide-details
+                            :items="selectionQuizzes"
+                            :loading="loading"
+                            :disabled="loading"
+                        >
+                        </v-select>
+                    </div>
+                    <div v-if="!loading">
+                        <div class="mb-9">
+                            <p class="bigger-p">Sobre</p>
+                            <v-row class="ma-0 py-3 px-4 justify-center">
+                                <v-col class="card mx-4">
+                                    <p class="header">Descrição</p>
+                                    <p>
+                                        {{ quizzes[currentQuiz].description }}
+                                    </p>
+                                </v-col>
+                                <v-col class="pa-0 mx-4">
+                                    <v-row class="ma-0 mb-4 w-100">
+                                        <div class="card">
+                                            <p class="header">
+                                                Mensagem aprovado
+                                            </p>
+                                            <p class="text-center">
+                                                {{
+                                                quizzes[currentQuiz].congratulations
+                                                }}
+                                            </p>
+                                        </div>
+                                    </v-row>
+                                    <v-row class="ma-0 mt-4 w-100">
+                                        <div class="card">
+                                            <p class="header">
+                                                Mensagem reprovado
+                                            </p>
+                                            <p class="text-center">
+                                                {{ quizzes[currentQuiz].failed
+                                                }}
+                                            </p>
+                                        </div>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                        </div>
+                        <div>
+                            <p class="bigger-p">Lista de Questões</p>
+                            <v-row
+                                v-for="(question, index) in quizzes[currentQuiz].questions"
+                                class="ma-0 py-3 px-8 justify-center"
+                            >
+                                <div class="card">
+                                    <p class="mt-2 font-weight-medium">
+                                        {{ index+1 }}) {{ question.question }}
+                                    </p>
+                                    <div class="my-10 mx-8">
+                                        <v-row
+                                            justify="center"
+                                            class="d-flex ga-4 ma-0"
+                                        >
+                                            <v-col
+                                                v-for="(option, index) in question.options"
+                                                class="pa-0 ma-0"
+                                                :class="['option-wrapper pa-0 w-100', option.length > 0 ? 'd-block' : 'd-none']"
+                                                :key="index"
+                                            >
+                                                <div
+                                                    v-if="option.length > 0 && option != null"
+                                                    :class="['option', index === question.correctAnswer ? 'correct' : 'incorrect']"
+                                                >
+                                                    {{ option }}
+                                                </div>
+                                            </v-col>
+                                        </v-row>
+                                        <div class="mt-6 explanation">
+                                            <p class="font-weigth-medium f-16">
+                                                Explicação:
+                                            </p>
+                                            <p class="ma-6">
+                                                {{ question.explanation }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <v-row class="ma-0 justify-space-between">
+                                        <div class="d-flex align-center f-12">
+                                            <p class="me-2">
+                                                Dificuldade: {{
+                                                question.difficulty + 1 }}
+                                            </p>
+                                            <p>
+                                                Categoria: {{ question.category
+                                                }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <v-btn
+                                                icon="mdi-trash-can"
+                                                variant="plain"
+                                                density="compact"
+                                                color="red"
+                                                @click="deleteQuestion(currentQuiz, index)"
+                                                class="delete-btn"
+                                            ></v-btn>
+                                        </div>
+                                    </v-row>
+                                </div>
+                            </v-row>
+                        </div>
+                    </div>
+                </div>
+            </v-sheet>
+        </div>
 
-		<script type="module">
-			import {
-				getQuizzes,
-				insertQuizzes,
-				logado,
-				deslogar,
-			} from "../firebase.js";
-			const {
-				createApp,
-				ref,
-				reactive,
-				computed,
-				onMounted,
-				onBeforeMount,
-			} = Vue;
-			const {createVuetify} = Vuetify;
-			const vuetify = createVuetify();
+        <script type="module">
+            import {
+                getQuizzes,
+                insertQuizzes,
+                logado,
+                deslogar,
+            } from "../firebase.js";
+            const {
+                createApp,
+                ref,
+                reactive,
+                computed,
+                onMounted,
+                onBeforeMount,
+            } = Vue;
+            const { createVuetify } = Vuetify;
+            const vuetify = createVuetify();
 
-			createApp({
-				setup() {
-					const quizzes = ref([]);
-					const selectionQuizzes = ref([
-						{title: "Loading...", value: 0},
-					]);
-					const currentQuiz = ref(0);
-					const loading = ref(true);
+            createApp({
+                setup() {
+                    const quizzes = ref([]);
+                    const selectionQuizzes = ref([
+                        { title: "Loading...", value: 0 },
+                    ]);
+                    const currentQuiz = ref(0);
+                    const loading = ref(true);
 
-					onBeforeMount(() => {
-						logado().then((user) => {
-							if (user === null) {
-								window.location.href = "../login.html";
-							}
-						});
-					});
+                    onBeforeMount(() => {
+                        logado().then((user) => {
+                            if (user === null) {
+                                window.location.href = "../login.html";
+                            }
+                        });
+                    });
 
-					onMounted(() => {
-						getQuizzes().then((quizzesData) => {
-							loading.value = false;
-							if (quizzesData) {
-								quizzes.value = [...quizzesData];
+                    onMounted(() => {
+                        getQuizzes().then((quizzesData) => {
+                            loading.value = false;
+                            if (quizzesData) {
+                                quizzes.value = [...quizzesData];
 
-								selectionQuizzes.value = [];
-								for (let i = 0; i < quizzes.value.length; i++) {
-									selectionQuizzes.value.push({
-										title: quizzes.value[i].name,
-										value: i,
-									});
-								}
+                                selectionQuizzes.value = [];
+                                for (let i = 0; i < quizzes.value.length; i++) {
+                                    selectionQuizzes.value.push({
+                                        title: quizzes.value[i].name,
+                                        value: i,
+                                    });
+                                }
 
-								console.log("Quizzes carregados");
-							}
-						});
-					});
+                                console.log(
+                                    "Quizzes carregados ",
+                                    quizzes.value
+                                );
+                            }
+                        });
+                    });
 
-					function generateAverageDifficulty() {
-						if (
-							quizzes.value[currentQuiz.value].questions
-								.length === 0
-						) {
-							quizzes.value[currentQuiz.value].difficulty = 0;
-							return;
-						}
+                    function generateAverageDifficulty() {
+                        if (
+                            quizzes.value[currentQuiz.value].questions
+                                .length === 0
+                        ) {
+                            quizzes.value[currentQuiz.value].difficulty = 0;
+                            return;
+                        }
 
-						const sum = quizzes.value[
-							currentQuiz.value
-						].questions.reduce((acc, q) => acc + q.difficulty, 0);
+                        const sum = quizzes.value[
+                            currentQuiz.value
+                        ].questions.reduce((acc, q) => acc + q.difficulty, 0);
 
-						quizzes.value[currentQuiz.value].difficulty = (
-							sum /
-							quizzes.value[currentQuiz.value].questions.length
-						).toFixed(0);
-					}
+                        quizzes.value[currentQuiz.value].difficulty = (
+                            sum /
+                            quizzes.value[currentQuiz.value].questions.length
+                        ).toFixed(0);
+                    }
 
-					function deleteQuestion(quizIndex, questionIndex) {
-						if (
-							confirm(
-								"Are you sure you want to delete this question?"
-							)
-						) {
-							quizzes.value[quizIndex].questions.splice(
-								questionIndex,
-								1
-							);
-							generateAverageDifficulty();
-							insertQuizzes(quizzes.value);
-						}
-					}
+                    function deleteQuestion(quizIndex, questionIndex) {
+                        if (
+                            confirm(
+                                "Are you sure you want to delete this question?"
+                            )
+                        ) {
+                            quizzes.value[quizIndex].questions.splice(
+                                questionIndex,
+                                1
+                            );
+                            generateAverageDifficulty();
+                            insertQuizzes(quizzes.value);
+                        }
+                    }
 
-					function sair() {
-						deslogar().then((retorno) => {
-							if (retorno) {
-								window.location.href = "../login.html";
-							}
-						});
-					}
+                    function sair() {
+                        deslogar().then((retorno) => {
+                            if (retorno) {
+                                window.location.href = "../login.html";
+                            }
+                        });
+                    }
 
-					return {
-						quizzes,
-						selectionQuizzes,
-						currentQuiz,
-						loading,
-						deleteQuestion,
-						sair,
-					};
-				},
-			})
-				.use(vuetify)
-				.mount("#app");
-		</script>
-	</body>
+                    return {
+                        quizzes,
+                        selectionQuizzes,
+                        currentQuiz,
+                        loading,
+                        deleteQuestion,
+                        sair,
+                    };
+                },
+            })
+                .use(vuetify)
+                .mount("#app");
+        </script>
+    </body>
 </html>
