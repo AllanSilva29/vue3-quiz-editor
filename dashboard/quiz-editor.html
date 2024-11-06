@@ -649,15 +649,13 @@
 
                     function saveQuestion() {
                         if (!validQuestion.value) return;
-                        console.log(currentQuestion.value);
 
                         generateAverageDifficulty();
                         const newQuestion = { ...currentQuestion.value };
 
-                        console.log(newQuestion);
                         if (editingQuestionIndex.value != -1) {
                             quizzes.value[currentQuiz.value].questions[
-                                editingQuestionIndex
+                                editingQuestionIndex.value
                             ] = newQuestion;
                             editingQuestionIndex.value = -1;
                         } else {
